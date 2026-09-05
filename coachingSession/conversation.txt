@@ -1,0 +1,335 @@
+====================================================================
+Week 01 Coaching Session — Transcript
+Student: Jörg Beyersdorfer
+Course: CSE 340 — Service Network project (W01 Learning Activity 1)
+Role: Learning Coach and Software Mentor (coaching session, not a test)
+====================================================================
+
+--------------------------------------------------------------------
+COACH:
+Welcome! Just to be clear from the start, this is a coaching session,
+not a test. It is perfectly okay—and even encouraged—to say "I don't
+know" or "I made a mistake." That's the fastest way we'll learn today.
+
+I'm your Learning Coach and Software Mentor for this Week 01 activity.
+My job today isn't to grade you — it's to have an open conversation
+about the decisions you made in your project, help you spot any gaps,
+and let *you* lead with your questions. We'll make sure we touch on
+four areas together (Express routing, JavaScript principles, EJS
+partials/pages, and frontend CSS), but there's no pass or fail — the
+win is simply having the conversation.
+
+Since I'm running in your code editor, I can see your project files
+directly (like server.js, your src/views/ EJS files, and
+public/css/main.css), so I'll cite specific files and line numbers
+rather than asking you to paste code.
+
+Am I right that I should address you as Jörg — and is there a
+particular question or part of your Week 01 project you'd most like to
+start with?
+
+--------------------------------------------------------------------
+STUDENT:
+One requirement is, that I need to share a code snippet for each topic.
+I assume the code should appear in the conversation. As you can access
+the code directly, what is the best way to fulfill this requirement?
+
+--------------------------------------------------------------------
+COACH:
+Great practical question, Jörg — and thinking about the requirement up
+front is exactly the right instinct.
+
+Here's the cleanest way to satisfy it: even though I can read your files
+directly, the requirement is that a code snippet appears for each topic,
+and your transcript (conversation.txt) needs to be self-contained. So
+for each of the four topics, we'll get the relevant snippet into the
+conversation text itself — that way anyone reading the saved transcript
+sees the code without needing your repo.
+
+The best division of labor:
+- You pick and paste (or tell me "pull lines X–Y from server.js") the
+  snippet you want to discuss for each topic. That keeps you the author
+  of the choice, which is the spirit of the requirement.
+- I'll then quote it back into the conversation so it's captured in the
+  transcript, and we'll talk about what it does and why you made that
+  choice.
+
+Let's start with Topic 1: Express Routing.
+
+Which snippet from your server.js would you like to use to show how your
+Express routing works — would you like to paste it, or should I pull the
+relevant lines for you?
+
+--------------------------------------------------------------------
+STUDENT (Topic 1 — Express Routing — code snippet):
+const renderCategories = async (req, res) => {
+    const title = 'Service Categories';
+    res.render('categories', { title });
+};
+app.get('/categories', renderCategories);
+
+--------------------------------------------------------------------
+COACH:
+Perfect — that's a nicely self-contained example. This is a good pick
+because it shows the whole routing story in a few lines — a handler
+function plus its registration.
+
+In your own words, what happens when a browser requests /categories —
+walk me through what app.get('/categories', renderCategories) actually
+tells Express to do?
+
+--------------------------------------------------------------------
+STUDENT:
+For my understanding it registers a route into app which I understand as
+a server. But this happens before the request comes from a browser. In
+the moment the server gets the /categories request the function
+renderCategories is called, which builds the response.
+
+--------------------------------------------------------------------
+COACH:
+That's a solid mental model, Jörg — and you've got the key insight
+exactly right: registration happens once at startup, and the handler
+only runs later, each time a matching request arrives. That separation
+of "define now, run later" trips a lot of people up.
+
+You have four routes registered:
+app.get('/', renderHome);
+app.get('/organizations', renderOrganizations);
+app.get('/projects', renderProjects);
+app.get('/categories', renderCategories);
+
+Why do you think it's app.get specifically — what does the get part
+represent, and what would happen if a browser sent a different kind of
+request to /categories?
+
+--------------------------------------------------------------------
+STUDENT:
+get represents the HTTP GET method, comparable with a DB select, which
+is the standard method for a browser request. If another method is used
+as post or put, it will not find a handler. So on the end it could
+generate a 404 error.
+
+--------------------------------------------------------------------
+COACH:
+Excellent — the GET-as-SELECT analogy is a great way to think about it:
+GET is meant to be a safe, read-only retrieval. And you're right that if
+no route matches the method AND path combination, Express falls through
+to its default handler and returns a 404 Not Found. (Small nuance: it's
+the combination of method + path that must match — so POST /categories
+genuinely has no handler here, even though the path string exists.)
+That's Topic 1 well covered.
+
+Let's move to Topic 2: JavaScript Language Principles.
+
+Which piece of JavaScript from your project would you like to use for
+this topic — and what made you choose it?
+
+--------------------------------------------------------------------
+STUDENT (Topic 2 — JavaScript Language Principles — code snippet):
+const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
+
+--------------------------------------------------------------------
+COACH:
+Nice choice — that single line is packed with JavaScript language
+features: reading from process.env, the optional chaining operator ?.,
+a method call, and the || operator all working together.
+
+Can you walk me through what this line does step by step — and in
+particular, why did you use the ?. before .toLowerCase() instead of just
+writing process.env.NODE_ENV.toLowerCase()?
+
+--------------------------------------------------------------------
+STUDENT:
+It defines something which will be unchangeable with the name NODE_ENV.
+"process.env." tries to read an environment variable "NODE_ENV" (which
+is different to the first one) and converts it to lower case if found.
+If not, it returns undefined which is falsy and because of this it will
+use 'production' instead. As .env sets this variable to "development" but
+is ignored by Git, the outcome of this line is just that you can show or
+use your environment setting.
+
+--------------------------------------------------------------------
+COACH:
+Really strong breakdown, Jörg — you nailed the short-circuiting of || and
+the falsy-undefined fallback, and the detail about .env being git-ignored
+shows you understand why a default matters.
+
+Let me zoom in on one subtle point. You said the ?. means it "returns
+undefined if not found." That's true of process.env.NODE_ENV on its own —
+but consider the .toLowerCase() call specifically:
+
+If you had written process.env.NODE_ENV.toLowerCase() (without the ?.)
+and the variable was not set, what exactly would happen at that point —
+would you still get undefined, or something else?
+
+--------------------------------------------------------------------
+STUDENT:
+process.env.NODE_ENV would deliver undefined, which is NOT a string. I'm
+not sure if undefined has a function toLowerCase(), but I would expect to
+get a specific error telling me that the type is not correct or so.
+
+--------------------------------------------------------------------
+COACH:
+Exactly right — and your instinct about "the type is not correct" is spot
+on. You'd get a TypeError: Cannot read properties of undefined (reading
+'toLowerCase'). undefined has no .toLowerCase() method, so calling it
+throws and crashes.
+
+That's precisely what the ?. prevents: if the left side is undefined or
+null, the whole chain short-circuits to undefined without ever attempting
+the method call — and then your || 'production' catches that undefined and
+supplies the default. So the two operators are a little team: ?. avoids
+the crash, || provides the fallback. Topic 2 done.
+
+On to Topic 3: EJS Partials and Pages.
+
+Which EJS snippet would you like to discuss — and what role does it play
+in your pages?
+
+--------------------------------------------------------------------
+STUDENT (Topic 3 — EJS Partials and Pages — code snippet, from home.ejs):
+<%- include('partials/header') %>
+    <main>
+        <h1><%= title %></h1>
+        <h2>Welcome to the CSE 340 Service Network!</h2>
+
+--------------------------------------------------------------------
+COACH:
+Excellent — that's a great snippet because it shows two different EJS tag
+types on adjacent lines. The include('partials/header') is the partial
+mechanism — reusing your header markup across every page instead of
+copy-pasting it. But notice you used two different delimiters: <%- %> for
+the include, and <%= %> for the title.
+
+Why do you think the include uses <%- while the title uses <%= — what's
+the difference between those two tags?
+
+--------------------------------------------------------------------
+STUDENT:
+The include adds HTML into the home page. Because of this it should not be
+escaped. In the header itself I use "<title><%= title %></title>" as well
+as in "<h1><%= title %></h1>". In both cases the value of title is escaped
+preventing cross-site-scripting.
+
+--------------------------------------------------------------------
+COACH:
+That's a textbook-perfect answer, Jörg — <%- outputs raw, unescaped HTML
+(correct for injecting a trusted partial's markup), while <%= escapes the
+value so characters like < become &lt;, defending against cross-site
+scripting. You clearly understand why the distinction matters, not just
+the syntax.
+
+You noticed that title is used both in header.ejs and in the page itself,
+yet you only set title once — back in server.js:
+const renderCategories = async (req, res) => {
+    const title = 'Service Categories';
+    res.render('categories', { title });
+};
+
+How does the header partial manage to see that same title value — how
+does the data get from res.render(...) all the way into the included
+partial?
+
+--------------------------------------------------------------------
+STUDENT:
+There is only one render function handling both the include and the title
+injection.
+
+--------------------------------------------------------------------
+COACH:
+Exactly — there's a single render pass, and the object you pass ({ title })
+becomes the shared set of "locals" for that whole render. When EJS hits
+include('partials/header'), the partial is rendered in that same scope, so
+it inherits access to title automatically. That's the elegant part: one
+data object, available to the page and every partial it pulls in. Topic 3
+complete.
+
+Now our final area — Topic 4: Frontend CSS.
+
+Which CSS snippet would you like to discuss for this topic — and what
+problem were you trying to solve with it?
+
+--------------------------------------------------------------------
+STUDENT:
+I'm not really sure what might be interesting enough to be discussed. Do
+you have a suggestion?
+
+--------------------------------------------------------------------
+COACH:
+Happy to help you pick. A great candidate is this one, because it does
+something clever in a single line:
+
+:root {
+    --content-width: 960px;
+}
+
+nav,
+main,
+footer {
+    width: min(100% - 2rem, var(--content-width));
+    margin-inline: auto;
+}
+
+This is interesting because it combines a CSS variable with the min()
+function to handle responsive width and centering without a media query.
+
+Looking at width: min(100% - 2rem, var(--content-width)) — what do you
+think this line does on a very wide screen versus on a narrow phone
+screen?
+
+--------------------------------------------------------------------
+STUDENT (Topic 4 — Frontend CSS — code snippet under discussion above):
+It just means that the smaller one should be used. On a wide screen
+100% - 2rem becomes bigger than 960px so it limits the width to this
+value. On a cell phone we have the opposite, so you use full width minus
+a little border space.
+
+--------------------------------------------------------------------
+COACH:
+Exactly right — min() picks the smaller value, so the layout is capped at
+960px on wide screens (keeping line lengths readable) and fluid on phones
+(full width minus a 2rem breathing margin). And margin-inline: auto then
+centers it horizontally. One line replacing what used to take a max-width
++ media query combo.
+
+One last question to tie in the CSS variables principle, since you defined
+--content-width up in :root:
+
+Why did you choose to define 960px as a variable in :root rather than just
+hard-coding 960px directly into the width rule — what advantage does that
+give you?
+
+--------------------------------------------------------------------
+STUDENT:
+It helps to make css more supportable. In this short example it is not
+really needed, but when the number of lines grows you have one place only
+to change. So in this short case it's more a question of coding style, but
+I think you should always code as you would have a huge project as it might
+grow and to change it later is easy.
+
+--------------------------------------------------------------------
+COACH:
+That's a mature way to think about it, Jörg — you've identified the real
+value: a CSS variable is a single source of truth. Change --content-width
+once and every element using it updates together, which also guarantees
+they stay consistent with each other. And your point about coding as if
+the project will grow is exactly the professional mindset — good habits
+scale, and :root variables cost almost nothing to adopt early.
+
+That completes all four topics — Express Routing, JavaScript Language
+Principles, EJS Partials & Pages, and Frontend CSS. Really well done.
+
+Session highlights:
+- You clearly understand the "register once, run per-request" model of
+  Express routes, and that method + path together must match.
+- You reasoned your way to the TypeError and saw how ?. and || work as a
+  team.
+- You gave a textbook explanation of <%- (unescaped) vs <%= (escaped) and
+  the XSS defense.
+- You understood min() + CSS variables for responsive, maintainable layout.
+
+There's no pass/fail here — the goal was the conversation, and you engaged
+with it thoughtfully. Great session, Jörg!
+====================================================================
+END OF TRANSCRIPT
+====================================================================
