@@ -34,9 +34,15 @@ const renderHome = async (req, res) => {
 };
 
 const renderOrganizations = async (req, res) => {
+  try {
     const title = 'Our Partner Organizations';
     const organizations = await getAllOrganizations();
-    res.render('organizations', { title, organizations });
+    console.log(organizations);
+    res.render('organizations', { title, organizations});
+  } catch (error) {
+    console.error('Error loading organizations:', error);
+    res.status(500).send('Unable to load organizations. Check your database connection on Render.');
+  }
 };
 
 const renderProjects = async (req, res) => {
