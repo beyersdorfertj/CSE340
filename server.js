@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import { testConnection } from './src/models/db.js';
 import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjectsWithOrganizations } from './src/models/projects.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -46,8 +47,15 @@ const renderOrganizations = async (req, res) => {
 };
 
 const renderProjects = async (req, res) => {
+  try {
     const title = 'Service Projects';
-    res.render('projects', { title });
+    const projects = await getAllProjectsWithOrganizations();
+
+    res.render('projects', { title, projects });
+  } catch (error) {
+    console.error('Error loading projects:', error);
+    res.status(500).send('Unable to load projects. Check your database connection on Render.');
+  }
 };
 
 const renderCategories = async (req, res) => {

@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 6BCmBDEDlIHafeKGgoHs0kphriP5kWEIW2b1cVE1wRn6PEpuGipvQgxMLre4iGA
+\restrict uzDZ0YJZjZrcu7gzSHgqI17z8CM0V2L8mz0olHXxaJebYnjxjOtZSJKnnRVzPQW
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-09-04 22:40:05
+-- Started on 2026-09-07 15:27:08
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -67,7 +67,38 @@ ALTER TABLE public.organization ALTER COLUMN organization_id ADD GENERATED ALWAY
 
 
 --
--- TOC entry 3378 (class 0 OID 16399)
+-- TOC entry 221 (class 1259 OID 16412)
+-- Name: projects; Type: TABLE; Schema: public; Owner: tjb_cse340_db
+--
+
+CREATE TABLE public.projects (
+    project_id integer NOT NULL,
+    organization_id integer NOT NULL,
+    description text NOT NULL,
+    location character varying(250) NOT NULL,
+    date date DEFAULT CURRENT_DATE NOT NULL
+);
+
+
+ALTER TABLE public.projects OWNER TO tjb_cse340_db;
+
+--
+-- TOC entry 222 (class 1259 OID 16415)
+-- Name: projects_project_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
+--
+
+ALTER TABLE public.projects ALTER COLUMN project_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.projects_project_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 3387 (class 0 OID 16399)
 -- Dependencies: 219
 -- Data for Name: organization; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
@@ -80,7 +111,17 @@ COPY public.organization (organization_id, name, description, contact_email, log
 
 
 --
--- TOC entry 3385 (class 0 OID 0)
+-- TOC entry 3389 (class 0 OID 16412)
+-- Dependencies: 221
+-- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
+--
+
+COPY public.projects (project_id, organization_id, description, location, date) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3396 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: organization_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
@@ -89,7 +130,16 @@ SELECT pg_catalog.setval('public.organization_organization_id_seq', 3, true);
 
 
 --
--- TOC entry 3230 (class 2606 OID 16410)
+-- TOC entry 3397 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: projects_project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
+--
+
+SELECT pg_catalog.setval('public.projects_project_id_seq', 1, false);
+
+
+--
+-- TOC entry 3236 (class 2606 OID 16410)
 -- Name: organization organization_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -98,7 +148,25 @@ ALTER TABLE ONLY public.organization
 
 
 --
--- TOC entry 2053 (class 826 OID 16391)
+-- TOC entry 3238 (class 2606 OID 16428)
+-- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
+--
+
+ALTER TABLE ONLY public.projects
+    ADD CONSTRAINT projects_pkey PRIMARY KEY (project_id);
+
+
+--
+-- TOC entry 3239 (class 2606 OID 16429)
+-- Name: projects fk_projects_organization; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
+--
+
+ALTER TABLE ONLY public.projects
+    ADD CONSTRAINT fk_projects_organization FOREIGN KEY (organization_id) REFERENCES public.organization(organization_id) NOT VALID;
+
+
+--
+-- TOC entry 2058 (class 826 OID 16391)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -106,7 +174,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON SEQUENCES TO tjb_cse340_
 
 
 --
--- TOC entry 2055 (class 826 OID 16393)
+-- TOC entry 2060 (class 826 OID 16393)
 -- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -114,7 +182,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TYPES TO tjb_cse340_db;
 
 
 --
--- TOC entry 2054 (class 826 OID 16392)
+-- TOC entry 2059 (class 826 OID 16392)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -122,18 +190,18 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON FUNCTIONS TO tjb_cse340_
 
 
 --
--- TOC entry 2052 (class 826 OID 16390)
+-- TOC entry 2057 (class 826 OID 16390)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO tjb_cse340_db;
 
 
--- Completed on 2026-09-04 22:40:10
+-- Completed on 2026-09-07 15:27:09
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 6BCmBDEDlIHafeKGgoHs0kphriP5kWEIW2b1cVE1wRn6PEpuGipvQgxMLre4iGA
+\unrestrict uzDZ0YJZjZrcu7gzSHgqI17z8CM0V2L8mz0olHXxaJebYnjxjOtZSJKnnRVzPQW
 
