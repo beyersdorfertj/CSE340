@@ -4,6 +4,7 @@ import express from 'express';
 import { testConnection } from './src/models/db.js';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllProjectsWithOrganizations } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -59,8 +60,14 @@ const renderProjects = async (req, res) => {
 };
 
 const renderCategories = async (req, res) => {
+  try {
     const title = 'Service Categories';
-    res.render('categories', { title });
+    const categories = await getAllCategories();
+    res.render('categories', { title, categories });
+  } catch (error) {
+    console.error('Error loading categories:', error);
+    res.status(500).send('Unable to load categories. Check your database connection on Render.');
+  }
 };
 
 app.get('/', renderHome);
