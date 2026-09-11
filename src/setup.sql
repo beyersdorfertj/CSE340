@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict M8LpTP0y7BF7ztErvfGbtRS06wqlcN9vXLYKg3MDF51sTRGSkBQ7OiubrDhX74h
+\restrict kxROpd9ZZ9IR0mYg3xSslLzYdcsPrpfeadwoX4ddcZQVtWELyHaLOUd7X8iACcu
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-09-07 16:34:04
+-- Started on 2026-09-09 20:15:45
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -145,9 +145,10 @@ ALTER TABLE public.projects ALTER COLUMN project_id ADD GENERATED ALWAYS AS IDEN
 --
 
 COPY public.categories (category_id, name) FROM stdin;
-1	Community Development
-2	Education
-3	Environmental Sustainability
+2	Educational
+3	Community Service
+4	Health & Wellness
+1	Environmental
 \.
 
 
@@ -186,6 +187,10 @@ COPY public.project_categories (project_id, category_id) FROM stdin;
 28	1
 29	2
 30	3
+18	1
+24	2
+24	4
+25	4
 \.
 
 
@@ -220,7 +225,7 @@ COPY public.projects (project_id, organization_id, description, location, date) 
 -- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
-SELECT pg_catalog.setval('public.categories_category_id_seq', 3, true);
+SELECT pg_catalog.setval('public.categories_category_id_seq', 4, true);
 
 
 --
@@ -336,11 +341,11 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON FUNCTIONS TO tjb_cse340_
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO tjb_cse340_db;
 
 
--- Completed on 2026-09-07 16:34:05
+-- Completed on 2026-09-09 20:15:48
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict M8LpTP0y7BF7ztErvfGbtRS06wqlcN9vXLYKg3MDF51sTRGSkBQ7OiubrDhX74h
+\unrestrict kxROpd9ZZ9IR0mYg3xSslLzYdcsPrpfeadwoX4ddcZQVtWELyHaLOUd7X8iACcu
 
