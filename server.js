@@ -27,6 +27,14 @@ app.set('view engine', 'ejs');
 // Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src/views'));
 
+// Middleware to log all incoming requests
+app.use((req, res, next) => {
+    if (NODE_ENV === 'development') {
+        console.log(`${req.method} ${req.url}`);
+    }
+    next(); // Pass control to the next middleware or route
+});
+
 /**
   * Routes
   */
@@ -39,7 +47,6 @@ const renderOrganizations = async (req, res) => {
   try {
     const title = 'Our Partner Organizations';
     const organizations = await getAllOrganizations();
-    console.log(organizations);
     res.render('organizations', { title, organizations});
   } catch (error) {
     console.error('Error loading organizations:', error);
@@ -51,7 +58,6 @@ const renderProjects = async (req, res) => {
   try {
     const title = 'Service Projects';
     const projects = await getAllProjectsWithOrganizations();
-
     res.render('projects', { title, projects });
   } catch (error) {
     console.error('Error loading projects:', error);
@@ -76,7 +82,7 @@ app.get('/projects', renderProjects);
 app.get('/categories', renderCategories);
 
 const startServer = () => {
-  app.listen(PORT, async () => {
+  const server = app.listen(PORT, async () => {
     try {
       await testConnection();
       console.log(`Server is running at http://127.0.0.1:${PORT}`);
@@ -84,6 +90,16 @@ const startServer = () => {
     } catch (error) {
       console.error('Error connecting to the database:', error);
     }
+  });
+
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Is another server already running?`);
+      console.error(`Check with: Get-NetTCPConnection -LocalPort ${PORT} -State Listen`);
+    } else {
+      console.error('Server error:', error);
+    }
+    process.exit(1); // exit cleanly instead of hanging silently
   });
 };
 
