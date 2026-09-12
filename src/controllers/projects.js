@@ -1,3 +1,5 @@
+import { getAllProjectsWithOrganizations } from '../models/projects.js';
+
 export async function showProjectsPage(req, res) {
   const title = 'Service Projects';
   const projects = await getAllProjectsWithOrganizations();
