@@ -2,9 +2,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import express from 'express';
 import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjectsWithOrganizations } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
+import router from './src/routes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -27,59 +25,44 @@ app.set('view engine', 'ejs');
 // Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Middleware to log all incoming requests
+// Middleware to log all incoming requests and to make NODE_ENV available to all templates
 app.use((req, res, next) => {
-    if (NODE_ENV === 'development') {
-        console.log(`${req.method} ${req.url}`);
-    }
-    next(); // Pass control to the next middleware or route
+  if (NODE_ENV === 'development') {
+    console.log(`${req.method} ${req.url}`);
+  }
+  res.locals.NODE_ENV = NODE_ENV;
+  next(); // Pass control to the next middleware or route
 });
 
-/**
-  * Routes
-  */
-const renderHome = async (req, res) => {
-    const title = 'Home';
-    res.render('home', { title });
-};
+app.use(router);
 
-const renderOrganizations = async (req, res) => {
-  try {
-    const title = 'Our Partner Organizations';
-    const organizations = await getAllOrganizations();
-    res.render('organizations', { title, organizations});
-  } catch (error) {
-    console.error('Error loading organizations:', error);
-    res.status(500).send('Unable to load organizations. Check your database connection on Render.');
-  }
-};
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+  const err = new Error('Page Not Found');
+  err.status = 404;
+  next(err);
+});
 
-const renderProjects = async (req, res) => {
-  try {
-    const title = 'Service Projects';
-    const projects = await getAllProjectsWithOrganizations();
-    res.render('projects', { title, projects });
-  } catch (error) {
-    console.error('Error loading projects:', error);
-    res.status(500).send('Unable to load projects. Check your database connection on Render.');
-  }
-};
-
-const renderCategories = async (req, res) => {
-  try {
-    const title = 'Service Categories';
-    const categories = await getAllCategories();
-    res.render('categories', { title, categories });
-  } catch (error) {
-    console.error('Error loading categories:', error);
-    res.status(500).send('Unable to load categories. Check your database connection on Render.');
-  }
-};
-
-app.get('/', renderHome);
-app.get('/organizations', renderOrganizations);
-app.get('/projects', renderProjects);
-app.get('/categories', renderCategories);
+// Global error handler
+app.use((err, req, res, next) => {
+  // Log error details for debugging
+  console.error('Error occurred:', err.message);
+  console.error('Stack trace:', err.stack);
+    
+  // Determine status and template
+  const status = err.status || 500;
+  const template = status === 404 ? '404' : '500';
+    
+  // Prepare data for the template
+  const context = {
+    title: status === 404 ? 'Page Not Found' : 'Server Error',
+    error: err.message,
+    stack: err.stack
+  };
+    
+  // Render the appropriate error template
+  res.status(status).render(`errors/${template}`, context);
+});
 
 const startServer = () => {
   const server = app.listen(PORT, async () => {
