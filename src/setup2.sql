@@ -26,7 +26,8 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: tjb_cse340_db
 --
 
--- *not* creating schema, since initdb creates it
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
 
 ALTER SCHEMA public OWNER TO tjb_cse340_db;
 
@@ -114,6 +115,7 @@ ALTER TABLE public.project_categories OWNER TO tjb_cse340_db;
 CREATE TABLE public.projects (
     project_id integer NOT NULL,
     organization_id integer NOT NULL,
+    title character varying(250) NOT NULL,
     description text NOT NULL,
     location character varying(250) NOT NULL,
     date date DEFAULT CURRENT_DATE NOT NULL
@@ -199,22 +201,22 @@ COPY public.project_categories (project_id, category_id) FROM stdin;
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
-COPY public.projects (project_id, organization_id, description, location, date) FROM stdin;
-16	1	Residential housing development in the northern district	Chicago, USA	2025-02-14
-17	1	City bridge renovation and structural reinforcement	Dublin, Ireland	2025-07-22
-18	1	Construction of a new municipal sports complex	Amsterdam, Netherlands	2024-11-09
-19	1	Commercial office tower modernization project	London, UK	2025-05-30
-20	1	Smart traffic infrastructure implementation	Singapore	2025-01-17
-21	2	Precision irrigation system deployment across farming sites	Toronto, Canada	2024-12-03
-22	2	Greenhouse automation and climate monitoring project	Frankfurt, Germany	2025-08-11
-23	2	Crop yield prediction using satellite imagery	Copenhagen, Denmark	2025-03-08
-24	2	Renewable energy integration for agricultural facilities	Melbourne, Australia	2025-06-19
-25	2	Research initiative on sustainable fertilizer optimization	Oslo, Norway	2024-10-27
-26	3	Volunteer coordination platform redesign	Zurich, Switzerland	2025-04-15
-27	3	Community food bank logistics improvement project	Dubai, UAE	2025-09-01
-28	3	Digital case management system for social services	Madrid, Spain	2025-02-28
-29	3	Mobile app for neighborhood outreach programs	Stockholm, Sweden	2024-12-20
-30	3	Online donation and fundraising portal development	Seoul, South Korea	2025-07-05
+COPY public.projects (project_id, organization_id, title, description, location, date) FROM stdin;
+16	1	Northern District Housing Development	Residential housing development in the northern district	Chicago, USA	2025-02-14
+17	1	City Bridge Renovation	City bridge renovation and structural reinforcement	Dublin, Ireland	2025-07-22
+18	1	Municipal Sports Complex Construction	Construction of a new municipal sports complex	Amsterdam, Netherlands	2024-11-09
+19	1	Office Tower Modernization	Commercial office tower modernization project	London, UK	2025-05-30
+20	1	Smart Traffic Infrastructure	Smart traffic infrastructure implementation	Singapore	2025-01-17
+21	2	Precision Irrigation Deployment	Precision irrigation system deployment across farming sites	Toronto, Canada	2024-12-03
+22	2	Greenhouse Automation & Climate Monitoring	Greenhouse automation and climate monitoring project	Frankfurt, Germany	2025-08-11
+23	2	Satellite Crop Yield Prediction	Crop yield prediction using satellite imagery	Copenhagen, Denmark	2025-03-08
+24	2	Agricultural Renewable Energy Integration	Renewable energy integration for agricultural facilities	Melbourne, Australia	2025-06-19
+25	2	Sustainable Fertilizer Optimization Research	Research initiative on sustainable fertilizer optimization	Oslo, Norway	2024-10-27
+26	3	Volunteer Coordination Platform Redesign	Volunteer coordination platform redesign	Zurich, Switzerland	2025-04-15
+27	3	Food Bank Logistics Improvement	Community food bank logistics improvement project	Dubai, UAE	2025-09-01
+28	3	Digital Case Management System	Digital case management system for social services	Madrid, Spain	2025-02-28
+29	3	Neighborhood Outreach Mobile App	Mobile app for neighborhood outreach programs	Stockholm, Sweden	2024-12-20
+30	3	Online Donation & Fundraising Portal	Online donation and fundraising portal development	Seoul, South Korea	2025-07-05
 \.
 
 
@@ -347,4 +349,3 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO tjb_cse340_db;
 --
 
 \unrestrict kxROpd9ZZ9IR0mYg3xSslLzYdcsPrpfeadwoX4ddcZQVtWELyHaLOUd7X8iACcu
-

@@ -7,10 +7,17 @@
         <% } else { %>
             <ul>
                 <% projects.forEach(project => { %>
+                    <%
+                        const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    %>
                     <li>
-                        <strong><%= project.name %></strong>:
-                        <%= project.project_description %>
-                        (<%= project.location %>, <%= project.date %>)
+                        <%= formattedDate %>:
+                        <strong><%= project.project_title %></strong>
+                        (<%= project.name %>)
                     </li>
                 <% }); %>
             </ul>

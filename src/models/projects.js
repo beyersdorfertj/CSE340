@@ -8,6 +8,7 @@ const getAllProjectsWithOrganizations = async() => {
                o.contact_email,
                o.logo_filename,
                p.project_id,
+               p.title AS project_title,
                p.description AS project_description,
                p.location,
                p.date
@@ -20,4 +21,24 @@ const getAllProjectsWithOrganizations = async() => {
     return result.rows;
 }
 
-export {getAllProjectsWithOrganizations}
+const getProjectsByOrganizationId = async (organizationId) => {
+      const query = `
+        SELECT
+          project_id,
+          organization_id,
+          title,
+          description,
+          location,
+          date
+        FROM projects
+        WHERE organization_id = $1
+        ORDER BY date;
+      `;
+      
+      const queryParams = [organizationId];
+      const result = await db.query(query, queryParams);
+
+      return result.rows;
+};
+
+export {getAllProjectsWithOrganizations, getProjectsByOrganizationId};
