@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+
+    <p><strong>Description:</strong> <%= project.description %></p>
+    <p><strong>Date:</strong> <%= project.date %></p>
+    <p><strong>Location:</strong> <%= project.location %></p>
+
+    <h3>Categories</h3>
+    <% if (project.categories && project.categories.length > 0) { %>
+        <ul>
+            <% project.categories.forEach(category => { %>
+                <li><%= category.name %></li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No categories assigned.</p>
+    <% } %>
+
+    <h3>Organization</h3>
+    <p><strong>Name:</strong> <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></p>
+    <p><strong>Description:</strong> <%= project.organization_description %></p>
+    <p><strong>Contact:</strong> <%= project.contact_email %></p>
+</main>
+<%- include('partials/footer') %>
