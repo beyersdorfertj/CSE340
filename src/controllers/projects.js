@@ -1,11 +1,14 @@
-import { getUpcomingProjects, getProjectDetails } from '../models/projects.js';
+import { getUpcomingProjects, getAllProjectsWithOrganizations, getProjectDetails } from '../models/projects.js';
 
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
 
 const showProjectsPage = async (req, res) => {
-  const title = 'Upcoming Service Projects';
-  const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
-  res.render('projects', { title, projects });
+  const upcomingOnly = req.query.upcoming === 'true';
+  const projects = upcomingOnly
+    ? await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS)
+    : await getAllProjectsWithOrganizations();
+  const title = upcomingOnly ? 'Upcoming Service Projects' : 'All Service Projects';
+  res.render('projects', { title, projects, upcomingOnly });
 };
 
 const showProjectDetailsPage = async (req, res) => {

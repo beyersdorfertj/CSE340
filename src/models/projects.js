@@ -13,7 +13,8 @@ const getAllProjectsWithOrganizations = async() => {
       p.location,
       p.date
     FROM public.organizations o
-    JOIN public.projects p ON o.organization_id = p.organization_id;
+    JOIN public.projects p ON o.organization_id = p.organization_id
+    ORDER BY p.date ASC;
   `;
 
   const result = await db.query(query);
