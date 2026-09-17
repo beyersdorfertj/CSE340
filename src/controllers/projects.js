@@ -9,9 +9,9 @@ const showProjectsPage = async (req, res) => {
 };
 
 const showProjectDetailsPage = async (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id, 10) || 0;
   const project = await getProjectDetails(id);
-  const title = project.title;
+  const title = project ? project.title : 'Project Not Found';
   res.render('project', { title, project });
 };
 

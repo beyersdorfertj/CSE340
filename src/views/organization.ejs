@@ -1,7 +1,11 @@
 <%- include('partials/header') %>
 <main>
-    <h1><%= title %></h1>
+  <h1><%= title %></h1>
 
+  <% if (!organizationDetails) { %>
+    <p>Sorry, the organization you are looking for could not be found.</p>
+    <p>Return to the <a href="/organizations">organizations list</a> to keep browsing.</p>
+  <% } else { %>
     <h2><%= organizationDetails.name %></h2>
     <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.name %> logo">
 
@@ -9,9 +13,10 @@
 
     <h3>Service Projects</h3>
     <ul>
-        <% projects.forEach(project => { %>
-            <li><a href="/project/<%= project.project_id %>"><%= project.title %></a></li>
-        <% }) %>
+      <% projects.forEach(project => { %>
+        <li><a href="/project/<%= project.project_id %>"><%= project.title %></a></li>
+      <% }) %>
     </ul>
+  <% } %>
 </main>
 <%- include('partials/footer') %>

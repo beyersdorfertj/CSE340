@@ -8,12 +8,11 @@ const showOrganizationsPage = async (req, res) => {
 };
 
 const showOrganizationDetailsPage = async (req, res) => {
-    const organizationId = req.params.id;
-    const organizationDetails = await getOrganizationDetails(organizationId);
-    const projects = await getProjectsByOrganizationId(organizationId);
-    const title = 'Organization Details';
-
-    res.render('organization', {title, organizationDetails, projects});
+  const organizationId = parseInt(req.params.id, 10) || 0;
+  const organizationDetails = await getOrganizationDetails(organizationId);
+  const projects = await getProjectsByOrganizationId(organizationId);
+  const title = organizationDetails ? 'Organization Details' : 'Organization Not Found';
+  res.render('organization', {title, organizationDetails, projects});
 };
 
 export { showOrganizationsPage, showOrganizationDetailsPage };

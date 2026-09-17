@@ -1,25 +1,30 @@
 <%- include('partials/header') %>
 <main>
-    <h1><%= title %></h1>
+  <h1><%= title %></h1>
 
+  <% if (!project) { %>
+    <p>Sorry, the service project you are looking for could not be found.</p>
+    <p>Return to the <a href="/projects">projects list</a> to keep browsing.</p>
+  <% } else { %>
     <p><strong>Description:</strong> <%= project.description %></p>
     <p><strong>Date:</strong> <%= project.date %></p>
     <p><strong>Location:</strong> <%= project.location %></p>
 
     <h3>Categories</h3>
     <% if (project.categories && project.categories.length > 0) { %>
-        <ul>
-            <% project.categories.forEach(category => { %>
-                <li><%= category.name %></li>
-            <% }) %>
-        </ul>
+      <ul>
+        <% project.categories.forEach(category => { %>
+          <li><a href="/category/<%= category.category_id %>"><%= category.name %></a></li>
+        <% }) %>
+      </ul>
     <% } else { %>
-        <p>No categories assigned.</p>
+      <p>No categories assigned.</p>
     <% } %>
 
     <h3>Organization</h3>
     <p><strong>Name:</strong> <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></p>
     <p><strong>Description:</strong> <%= project.organization_description %></p>
     <p><strong>Contact:</strong> <%= project.contact_email %></p>
+  <% } %>
 </main>
 <%- include('partials/footer') %>
