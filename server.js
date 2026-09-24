@@ -1,11 +1,14 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
 import express from 'express';
+import session from 'express-session';
+import flash from './src/middleware/flash.js';
 import { testConnection } from './src/models/db.js';
 import router from './src/routes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,14 +19,20 @@ const app = express();
   * Configure Express middleware
   */
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+}));
 
-// Set EJS as the templating engine
-app.set('view engine', 'ejs');
+// Allow Express to receive and process common POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Tell Express where to find your templates
-app.set('views', path.join(__dirname, 'src/views'));
+app.use(express.static(path.join(__dirname, 'public')));  // Serve static files from the public directory
+app.set('view engine', 'ejs');  // Set EJS as the templating engine
+app.set('views', path.join(__dirname, 'src/views'));  // Tell Express where to find your templates
 
 // Middleware to log all incoming requests and to make NODE_ENV available to all templates
 app.use((req, res, next) => {
@@ -34,6 +43,7 @@ app.use((req, res, next) => {
   next(); // Pass control to the next middleware or route
 });
 
+app.use(flash);  // Use flash message middleware
 app.use(router);
 
 // Catch-all route for 404 errors

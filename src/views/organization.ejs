@@ -7,16 +7,17 @@
     <p>Return to the <a href="/organizations">organizations list</a> to keep browsing.</p>
   <% } else { %>
     <h2><%= organizationDetails.name %></h2>
-    <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.name %> logo">
+    <img src="/images/<%= organizationDetails.logoFilename %>" alt="<%= organizationDetails.name %> logo">
 
     <p>Description: <%= organizationDetails.description %></p>
 
     <h3>Service Projects</h3>
     <ul>
       <% projects.forEach(project => { %>
-        <li><a href="/project/<%= project.project_id %>"><%= project.title %></a></li>
+        <li><a href="/project/<%= project.projectId %>"><%= project.title %></a></li>
       <% }) %>
     </ul>
+    <p><a href="/organization/<%= organizationDetails.organizationId %>/edit">Edit Organization</a></p>
   <% } %>
 </main>
 <%- include('partials/footer') %>

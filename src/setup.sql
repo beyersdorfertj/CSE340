@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict kxROpd9ZZ9IR0mYg3xSslLzYdcsPrpfeadwoX4ddcZQVtWELyHaLOUd7X8iACcu
+\restrict YvswMevL9I9sT3XJOgldgHkXraWQpmbTuHCuHPhHNCXDVPyQgF9JeByZf9Wa0Nx
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-09-09 20:15:45
+-- Started on 2026-09-19 17:26:47
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,20 +22,30 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 5 (class 2615 OID 2200)
+-- TOC entry 5 (class 2615 OID 16619)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: tjb_cse340_db
 --
 
 -- *not* creating schema, since initdb creates it
 
+
 ALTER SCHEMA public OWNER TO tjb_cse340_db;
+
+--
+-- TOC entry 3414 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: tjb_cse340_db
+--
+
+COMMENT ON SCHEMA public IS '';
+
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 223 (class 1259 OID 16434)
+-- TOC entry 219 (class 1259 OID 16620)
 -- Name: categories; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -48,7 +58,7 @@ CREATE TABLE public.categories (
 ALTER TABLE public.categories OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 224 (class 1259 OID 16437)
+-- TOC entry 220 (class 1259 OID 16625)
 -- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -63,7 +73,7 @@ ALTER TABLE public.categories ALTER COLUMN category_id ADD GENERATED ALWAYS AS I
 
 
 --
--- TOC entry 219 (class 1259 OID 16399)
+-- TOC entry 221 (class 1259 OID 16626)
 -- Name: organizations; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -79,7 +89,7 @@ CREATE TABLE public.organizations (
 ALTER TABLE public.organizations OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 220 (class 1259 OID 16411)
+-- TOC entry 222 (class 1259 OID 16636)
 -- Name: organization_organization_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -94,7 +104,7 @@ ALTER TABLE public.organizations ALTER COLUMN organization_id ADD GENERATED ALWA
 
 
 --
--- TOC entry 225 (class 1259 OID 16445)
+-- TOC entry 223 (class 1259 OID 16637)
 -- Name: project_categories; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -107,13 +117,14 @@ CREATE TABLE public.project_categories (
 ALTER TABLE public.project_categories OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 221 (class 1259 OID 16412)
+-- TOC entry 224 (class 1259 OID 16642)
 -- Name: projects; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
 CREATE TABLE public.projects (
     project_id integer NOT NULL,
     organization_id integer NOT NULL,
+    title character varying(250) NOT NULL,
     description text NOT NULL,
     location character varying(250) NOT NULL,
     date date DEFAULT CURRENT_DATE NOT NULL
@@ -123,7 +134,7 @@ CREATE TABLE public.projects (
 ALTER TABLE public.projects OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 222 (class 1259 OID 16415)
+-- TOC entry 225 (class 1259 OID 16654)
 -- Name: projects_project_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -138,8 +149,8 @@ ALTER TABLE public.projects ALTER COLUMN project_id ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- TOC entry 3406 (class 0 OID 16434)
--- Dependencies: 223
+-- TOC entry 3402 (class 0 OID 16620)
+-- Dependencies: 219
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -152,8 +163,8 @@ COPY public.categories (category_id, name) FROM stdin;
 
 
 --
--- TOC entry 3402 (class 0 OID 16399)
--- Dependencies: 219
+-- TOC entry 3404 (class 0 OID 16626)
+-- Dependencies: 221
 -- Data for Name: organizations; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -165,8 +176,8 @@ COPY public.organizations (organization_id, name, description, contact_email, lo
 
 
 --
--- TOC entry 3408 (class 0 OID 16445)
--- Dependencies: 225
+-- TOC entry 3406 (class 0 OID 16637)
+-- Dependencies: 223
 -- Data for Name: project_categories; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -194,33 +205,33 @@ COPY public.project_categories (project_id, category_id) FROM stdin;
 
 
 --
--- TOC entry 3404 (class 0 OID 16412)
--- Dependencies: 221
+-- TOC entry 3407 (class 0 OID 16642)
+-- Dependencies: 224
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
-COPY public.projects (project_id, organization_id, description, location, date) FROM stdin;
-16	1	Residential housing development in the northern district	Chicago, USA	2025-02-14
-17	1	City bridge renovation and structural reinforcement	Dublin, Ireland	2025-07-22
-18	1	Construction of a new municipal sports complex	Amsterdam, Netherlands	2024-11-09
-19	1	Commercial office tower modernization project	London, UK	2025-05-30
-20	1	Smart traffic infrastructure implementation	Singapore	2025-01-17
-21	2	Precision irrigation system deployment across farming sites	Toronto, Canada	2024-12-03
-22	2	Greenhouse automation and climate monitoring project	Frankfurt, Germany	2025-08-11
-23	2	Crop yield prediction using satellite imagery	Copenhagen, Denmark	2025-03-08
-24	2	Renewable energy integration for agricultural facilities	Melbourne, Australia	2025-06-19
-25	2	Research initiative on sustainable fertilizer optimization	Oslo, Norway	2024-10-27
-26	3	Volunteer coordination platform redesign	Zurich, Switzerland	2025-04-15
-27	3	Community food bank logistics improvement project	Dubai, UAE	2025-09-01
-28	3	Digital case management system for social services	Madrid, Spain	2025-02-28
-29	3	Mobile app for neighborhood outreach programs	Stockholm, Sweden	2024-12-20
-30	3	Online donation and fundraising portal development	Seoul, South Korea	2025-07-05
+COPY public.projects (project_id, organization_id, title, description, location, date) FROM stdin;
+16	1	Northern District Housing Development	Residential housing development in the northern district	Chicago, USA	2027-02-14
+17	1	City Bridge Renovation	City bridge renovation and structural reinforcement	Dublin, Ireland	2027-07-22
+18	1	Municipal Sports Complex Construction	Construction of a new municipal sports complex	Amsterdam, Netherlands	2026-11-09
+19	1	Office Tower Modernization	Commercial office tower modernization project	London, UK	2027-05-30
+20	1	Smart Traffic Infrastructure	Smart traffic infrastructure implementation	Singapore	2027-01-17
+21	2	Precision Irrigation Deployment	Precision irrigation system deployment across farming sites	Toronto, Canada	2026-12-03
+22	2	Greenhouse Automation & Climate Monitoring	Greenhouse automation and climate monitoring project	Frankfurt, Germany	2027-08-11
+23	2	Satellite Crop Yield Prediction	Crop yield prediction using satellite imagery	Copenhagen, Denmark	2027-03-08
+24	2	Agricultural Renewable Energy Integration	Renewable energy integration for agricultural facilities	Melbourne, Australia	2027-06-19
+25	2	Sustainable Fertilizer Optimization Research	Research initiative on sustainable fertilizer optimization	Oslo, Norway	2026-10-27
+26	3	Volunteer Coordination Platform Redesign	Volunteer coordination platform redesign	Zurich, Switzerland	2027-04-15
+27	3	Food Bank Logistics Improvement	Community food bank logistics improvement project	Dubai, UAE	2027-09-01
+28	3	Digital Case Management System	Digital case management system for social services	Madrid, Spain	2027-02-28
+29	3	Neighborhood Outreach Mobile App	Mobile app for neighborhood outreach programs	Stockholm, Sweden	2026-12-20
+30	3	Online Donation & Fundraising Portal	Online donation and fundraising portal development	Seoul, South Korea	2027-07-05
 \.
 
 
 --
--- TOC entry 3414 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 3416 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -228,8 +239,8 @@ SELECT pg_catalog.setval('public.categories_category_id_seq', 4, true);
 
 
 --
--- TOC entry 3415 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 3417 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: organization_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -237,8 +248,8 @@ SELECT pg_catalog.setval('public.organization_organization_id_seq', 3, true);
 
 
 --
--- TOC entry 3416 (class 0 OID 0)
--- Dependencies: 222
+-- TOC entry 3418 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: projects_project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -246,7 +257,7 @@ SELECT pg_catalog.setval('public.projects_project_id_seq', 30, true);
 
 
 --
--- TOC entry 3249 (class 2606 OID 16444)
+-- TOC entry 3245 (class 2606 OID 16656)
 -- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -255,7 +266,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- TOC entry 3245 (class 2606 OID 16410)
+-- TOC entry 3247 (class 2606 OID 16658)
 -- Name: organizations organization_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -264,7 +275,7 @@ ALTER TABLE ONLY public.organizations
 
 
 --
--- TOC entry 3251 (class 2606 OID 16451)
+-- TOC entry 3249 (class 2606 OID 16660)
 -- Name: project_categories pk_projekt_categories; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -273,7 +284,7 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3247 (class 2606 OID 16428)
+-- TOC entry 3251 (class 2606 OID 16662)
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -282,7 +293,7 @@ ALTER TABLE ONLY public.projects
 
 
 --
--- TOC entry 3253 (class 2606 OID 16452)
+-- TOC entry 3252 (class 2606 OID 16663)
 -- Name: project_categories fk_category; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -291,7 +302,7 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3254 (class 2606 OID 16457)
+-- TOC entry 3253 (class 2606 OID 16668)
 -- Name: project_categories fk_project; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -300,12 +311,21 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3252 (class 2606 OID 16429)
+-- TOC entry 3254 (class 2606 OID 16673)
 -- Name: projects fk_projects_organization; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
 ALTER TABLE ONLY public.projects
     ADD CONSTRAINT fk_projects_organization FOREIGN KEY (organization_id) REFERENCES public.organizations(organization_id) NOT VALID;
+
+
+--
+-- TOC entry 3415 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: tjb_cse340_db
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
 --
@@ -340,11 +360,11 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON FUNCTIONS TO tjb_cse340_
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO tjb_cse340_db;
 
 
--- Completed on 2026-09-09 20:15:48
+-- Completed on 2026-09-19 17:26:50
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict kxROpd9ZZ9IR0mYg3xSslLzYdcsPrpfeadwoX4ddcZQVtWELyHaLOUd7X8iACcu
+\unrestrict YvswMevL9I9sT3XJOgldgHkXraWQpmbTuHCuHPhHNCXDVPyQgF9JeByZf9Wa0Nx
 

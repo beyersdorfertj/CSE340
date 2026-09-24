@@ -2,14 +2,14 @@ import db from './db.js'
 
 const getAllProjectsWithOrganizations = async() => {
   const query = `
-    SELECT o.organization_id,
+    SELECT o.organization_id AS "organizationId",
       o.name,
-      o.description AS organization_description,
-      o.contact_email,
-      o.logo_filename,
-      p.project_id,
-      p.title AS project_title,
-      p.description AS project_description,
+      o.description AS "organizationDescription",
+      o.contact_email AS "contactEmail",
+      o.logo_filename AS "logoFilename",
+      p.project_id AS "projectId",
+      p.title AS "projectTitle",
+      p.description AS "projectDescription",
       p.location,
       p.date
     FROM public.organizations o
@@ -22,16 +22,16 @@ const getAllProjectsWithOrganizations = async() => {
   return result.rows;
 }
 
-const getUpcomingProjects = async (number_of_projects) => {
+const getUpcomingProjects = async (numberOfProjects) => {
   const query = `
-    SELECT o.organization_id,
+    SELECT o.organization_id AS "organizationId",
       o.name,
-      o.description AS organization_description,
-      o.contact_email,
-      o.logo_filename,
-      p.project_id,
-      p.title AS project_title,
-      p.description AS project_description,
+      o.description AS "organizationDescription",
+      o.contact_email AS "contactEmail",
+      o.logo_filename AS "logoFilename",
+      p.project_id AS "projectId",
+      p.title AS "projectTitle",
+      p.description AS "projectDescription",
       p.location,
       p.date
     FROM public.organizations o
@@ -41,7 +41,7 @@ const getUpcomingProjects = async (number_of_projects) => {
     LIMIT $1;
   `;
 
-  const queryParams = [number_of_projects];
+  const queryParams = [numberOfProjects];
   const result = await db.query(query, queryParams);
 
   return result.rows;
@@ -50,8 +50,8 @@ const getUpcomingProjects = async (number_of_projects) => {
 const getProjectsByOrganizationId = async (organizationId) => {
   const query = `
     SELECT
-      project_id,
-      organization_id,
+      project_id AS "projectId",
+      organization_id AS "organizationId",
       title,
       description,
       location,
@@ -60,7 +60,7 @@ const getProjectsByOrganizationId = async (organizationId) => {
     WHERE organization_id = $1
     ORDER BY date;
   `;
-      
+
   const queryParams = [organizationId];
   const result = await db.query(query, queryParams);
 
@@ -70,19 +70,19 @@ const getProjectsByOrganizationId = async (organizationId) => {
 const getProjectDetails = async (projectId) => {
   const query = `
     SELECT
-      p.project_id,
+      p.project_id AS "projectId",
       p.title,
       p.description,
       p.location,
       p.date,
-      o.organization_id,
-      o.name AS organization_name,
-      o.description AS organization_description,
-      o.contact_email,
-      o.logo_filename,
+      o.organization_id AS "organizationId",
+      o.name AS "organizationName",
+      o.description AS "organizationDescription",
+      o.contact_email AS "contactEmail",
+      o.logo_filename AS "logoFilename",
       COALESCE(
         json_agg(
-          json_build_object('category_id', c.category_id, 'name', c.name)
+          json_build_object('categoryId', c.category_id, 'name', c.name)
           ORDER BY c.name
         ) FILTER (WHERE c.category_id IS NOT NULL),
         '[]'
@@ -104,7 +104,7 @@ const getProjectDetails = async (projectId) => {
 const getProjectsByCategoryId = async (categoryId) => {
   const query = `
     SELECT
-      p.project_id,
+      p.project_id AS "projectId",
       p.title,
       p.description,
       p.location,
@@ -122,4 +122,25 @@ const getProjectsByCategoryId = async (categoryId) => {
   return result.rows;
 };
 
-export {getAllProjectsWithOrganizations, getUpcomingProjects, getProjectsByOrganizationId, getProjectsByCategoryId, getProjectDetails};
+const createProject = async (title, description, location, date, organizationId) => {
+  const query = `
+    INSERT INTO projects (title, description, location, date, organization_id)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING project_id AS "projectId";
+  `;
+
+  const queryParams = [title, description, location, date, organizationId];
+  const result = await db.query(query, queryParams);
+
+  if (result.rows.length === 0) {
+    throw new Error('Failed to create project');
+  }
+
+  if (process.env.ENABLE_SQL_LOGGING === 'true') {
+    console.log('Created new project with ID:', result.rows[0].projectId);
+  }
+
+  return result.rows[0].projectId;
+};
+
+export {getAllProjectsWithOrganizations, getUpcomingProjects, getProjectsByOrganizationId, getProjectsByCategoryId, getProjectDetails, createProject};

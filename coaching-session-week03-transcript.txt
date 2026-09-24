@@ -1,0 +1,413 @@
+========================================================================
+WEEK 03 COACHING SESSION TRANSCRIPT
+Student: Thomas Jörg
+Role: Learning Coach and Software Mentor
+Format: Coaching session (not a test) — CSE340
+========================================================================
+
+------------------------------------------------------------------------
+COACH:
+Welcome! Just to be clear from the start, this is a coaching session, not
+a test. It is perfectly okay—and even encouraged—to say "I don't know" or
+"I made a mistake." That's the fastest way we'll learn today.
+
+I'm your Learning Coach and Software Mentor for this Week 03 session. My
+job is simply to have an open, supportive conversation with you about your
+assignment, help you spot any knowledge gaps, and talk through the
+decisions you made. There's no pass or fail here.
+
+A couple of quick notes on how I'll work:
+- Since we're in your code editor, I can look at your files directly and
+  cite them by filename and line number as we go.
+- We'll make sure to cover four topics together—Models, Views,
+  Controllers, and Error handling—but you're welcome to lead with whatever's
+  on your mind.
+
+To get us started: What name would you like me to call you during our
+session today?
+
+------------------------------------------------------------------------
+STUDENT:
+Thomas Jörg
+
+------------------------------------------------------------------------
+COACH:
+Nice to meet you, Thomas Jörg! I'm glad you're here, and I'm looking
+forward to a relaxed conversation about your work.
+
+Before we dive in, let me ask: Is there a particular part of your
+assignment you'd like to start with, or would you prefer that we begin
+with the first topic—your Models code?
+
+------------------------------------------------------------------------
+STUDENT:
+Let's start with the Models code
+
+------------------------------------------------------------------------
+COACH:
+Great choice! Let me take a look at your models so we can talk about them
+together.
+
+[Reviewed src/models/projects.js, categories.js, organizations.js]
+
+Thanks, Thomas Jörg—I've had a look at your model files. You've got some
+nicely structured functions in src\models\projects.js, and I can see a few
+that take a parameter and use it inside an SQL query, which is exactly the
+kind of thing worth talking through.
+
+Let's focus on one of them together. Here's a snippet from
+src\models\projects.js:50-68:
+
+  const getProjectsByOrganizationId = async (organizationId) => {
+    const query = `
+      SELECT
+        project_id, organization_id, title,
+        description, location, date
+      FROM projects
+      WHERE organization_id = $1
+      ORDER BY date;
+    `;
+
+    const queryParams = [organizationId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows;
+  };
+
+To get us started with an open discussion: Can you walk me through what
+this function does, in your own words—what goes in, and what comes back
+out?
+
+------------------------------------------------------------------------
+STUDENT:
+The function takes a parameter expecting a number. Then it calls a query
+providing the parameters which are a SQL query and a parameter array,
+waits for the result and gives back what ever it gets out of the query.
+
+------------------------------------------------------------------------
+COACH:
+That's a clear and accurate summary—you've got the flow down well: a value
+goes in, it's handed to the query along with the SQL, and you return
+whatever rows come back.
+
+Let me zoom in on one specific design choice. Instead of writing the
+organization id directly into the SQL string, you used $1 in the query and
+passed [organizationId] as a separate array.
+
+Why do you think you wrote it that way, using $1 and a parameter array,
+rather than just building the string like
+WHERE organization_id = ${organizationId}?
+
+------------------------------------------------------------------------
+STUDENT:
+It's simply to prevent SQL injection.
+
+------------------------------------------------------------------------
+COACH:
+Exactly right—that's the key reason, and it's a great instinct to have
+baked into your model layer.
+
+Let me push just a little deeper to make sure the mechanism is clear in
+your mind, because that's what separates memorizing "use parameters" from
+truly understanding it.
+
+When you pass the value through $1 and the parameter array, how does that
+actually stop an attacker's input from being treated as SQL—what does the
+database driver do with that value that makes it safe?
+
+------------------------------------------------------------------------
+STUDENT:
+That's a point I don't need to know in details. This functionality is
+provited by the query function I call. And to speak frankly: I'm not a
+security expert in JS and I believe it's enough to know that you have to do
+it this way following best practise.
+
+------------------------------------------------------------------------
+COACH:
+That's a completely fair and honest place to draw the line, Thomas Jörg—and
+I appreciate you saying it frankly. You're right that the safety is
+provided by the driver, and knowing "this is the correct, best-practice way
+to do it" is genuinely enough to write secure code. Not everyone needs to
+be a security expert.
+
+Just so you have it in one sentence (no need to memorize): the driver sends
+your SQL and the value over separately, so the value is only ever treated
+as data, never as executable SQL—that's why injected commands can't run.
+You already do the right thing; that's the part that matters.
+
+Let me ask one more thing about your models before we move on. I noticed a
+small but deliberate difference: getProjectsByOrganizationId returns
+result.rows (the whole array), while getProjectDetails at
+src\models\projects.js:101 returns result.rows[0] (just the first row).
+
+Why did you choose to return a single object in one case and an array in
+the other?
+
+------------------------------------------------------------------------
+STUDENT:
+From getProjectsByOrganizationId() you expect potentially more then on
+entry organized in an array. From getProjectDetails() you expect a single
+entry only. And the function should fit to your expectation. Otherwise you
+would need to document result format and check it each time before you use
+any function. And this would be something each developer would hate to do.
+
+------------------------------------------------------------------------
+COACH:
+That's really well put, Thomas Jörg—and it reflects mature design thinking.
+You're shaping each function's return value to match the caller's
+expectation, so the API feels predictable and self-documenting. You even
+named the real cost of not doing that: forcing every developer to re-check
+the shape before every use. That's exactly the kind of empathy-for-the-
+next-developer that makes a codebase pleasant to work in. Nicely done.
+
+That wraps up our Models discussion beautifully. Let's move to Topic 2:
+Views.
+
+[Reviewed src/views/*.ejs files]
+
+Perfect—your projects.ejs has a great example of inserting data into a
+link. Here's the snippet I'd like to focus on, from
+src\views\projects.ejs:21-25:
+
+  <li>
+      <%= formattedDate %>:
+      <strong><a href="/project/<%= project.project_id %>"><%= project.project_title %></a></strong>
+      (<a href="/organization/<%= project.organization_id %>"><%= project.name %></a>)
+  </li>
+
+This is running inside a projects.forEach(...) loop, and you're building
+links dynamically for each project.
+
+Can you walk me through what's happening in that
+<a href="/project/<%= project.project_id %>"> line—what does the final HTML
+look like once EJS has rendered it for a given project?
+
+------------------------------------------------------------------------
+STUDENT:
+It simply adds the id of a project to a path using it as an URL in a link.
+For example with project.project_id=3 it ends up with <a href="/project/3">.
+
+------------------------------------------------------------------------
+COACH:
+Exactly right—for project_id = 3 it renders as <a href="/project/3">,
+giving you a clean, working link to that specific project. That's the
+essence of server-side templating: mixing static markup with per-record
+data.
+
+Now I noticed you use two different EJS output tags in your views. For the
+data—like <%= project.project_title %>—you use <%= %>, but at the top of
+the file for the partial you wrote <%- include('partials/header') %> with
+<%- %> (a dash instead of an equals).
+
+What's the difference between <%= %> and <%- %>, and why does it matter
+which one you use for the project title?
+
+------------------------------------------------------------------------
+STUDENT:
+<%= escapes HTML, <%- outputs raw. You should use <%= %> for each value
+coming from an user or out of a DB.
+
+------------------------------------------------------------------------
+COACH:
+Spot on, Thomas Jörg. <%= %> escapes HTML so that any value from a user or
+the database is rendered as harmless text rather than active markup—which
+protects you against cross-site scripting (XSS). And <%- %> outputs raw
+HTML, which is exactly what you want for trusted content like including
+your header partial. You've now shown good instincts on both major
+injection risks: parameterized queries for SQL, and escaped output for the
+browser. That's a strong, consistent security mindset across your layers.
+
+That nicely rounds out our Views discussion. Let's move to Topic 3:
+Controllers.
+
+[Reviewed src/controllers/projects.js and src/routes.js]
+
+This is a great example for Topic 3. Here's the route definition in
+src\routes.js:15 paired with the handler in
+src\controllers\projects.js:14-19:
+
+  // src/routes.js
+  router.get('/project/:id', showProjectDetailsPage);
+
+  // src/controllers/projects.js
+  const showProjectDetailsPage = async (req, res) => {
+    const id = parseInt(req.params.id, 10) || 0;
+    const project = await getProjectDetails(id);
+    const title = project ? project.title : 'Project Not Found';
+    res.render('project', { title, project });
+  };
+
+You've got a route parameter here—the :id in the path. Let's talk about how
+it flows through.
+
+Can you explain the connection between the :id in '/project/:id' and the
+req.params.id in your handler—how does a value from the URL end up in that
+variable?
+
+------------------------------------------------------------------------
+STUDENT:
+This is also something I don't need to know in details. It's a
+functionality provided by Express and whatever in the URL fits to the
+position of :id is deliverd by req.prarams.id. How it works internally -
+who cares.
+
+------------------------------------------------------------------------
+COACH:
+Honestly, Thomas Jörg, you did answer the conceptual part perfectly:
+"whatever in the URL fits the position of :id is delivered by
+req.params.id." That's exactly the right mental model, and you're right that
+the internal implementation is Express's job, not yours. Knowing the
+behavior is what counts.
+
+Let me look at a line where you made a deliberate choice, though—this one:
+
+  const id = parseInt(req.params.id, 10) || 0;
+
+The value from req.params.id arrives as a string, and you actively
+transform it here.
+
+Why did you write parseInt(req.params.id, 10) and then tack on || 0 at the
+end—what problem are you defending against with each part?
+
+------------------------------------------------------------------------
+STUDENT:
+That's because the user could change the URL by typing something like a
+pure text. But even then I want my code doesn't crash. In this case I pass
+the "invalid" id=0 to the render function so that this function can provide
+a more userfriendly error message.
+
+------------------------------------------------------------------------
+COACH:
+That's excellent defensive thinking, Thomas Jörg. You've anticipated that
+the URL is user-controlled—someone can type /project/banana—and rather than
+letting getProjectDetails choke on a bad value, you normalize it to 0,
+which safely won't match any real project and lets you show a friendly
+"Project Not Found" message instead of a crash. That's robust, user-
+centered code, and it's a perfect bridge into our final topic.
+
+Let's move to Topic 4: Error handling.
+
+[Reviewed src/controllers/errors.js, src/routes.js, server.js]
+
+This is a really clean error-handling setup, Thomas Jörg. Here's the heart
+of it from server.js:39-65:
+
+  // Catch-all route for 404 errors
+  app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+  });
+
+  // Global error handler
+  app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+
+    const context = {
+      title: status === 404 ? 'Page Not Found' : 'Server Error',
+      error: err.message,
+      stack: err.stack
+    };
+
+    res.status(status).render(`errors/${template}`, context);
+  });
+
+Let's talk through your overall strategy here. These two app.use(...) blocks
+sit at the very bottom of server.js, after app.use(router).
+
+Why does the order matter—why do these two blocks have to come after all
+your normal routes rather than before them?
+
+------------------------------------------------------------------------
+STUDENT:
+Because Express handles routes from top down. The magic is the line before:
+"app.use(router);". Here all routes are handled. And in case they are not
+handled, it reaches this function (which is NOT an error handling function
+but opposite. It generates an error, which then will be catches by the
+global error handler.
+
+------------------------------------------------------------------------
+COACH:
+That's an excellent and precise explanation, Thomas Jörg. You nailed two
+subtle points: Express matches middleware top-down, so these must sit after
+app.use(router) to act as the fallback; and you correctly distinguished
+that the 404 block is NOT an error handler—it creates an error and forwards
+it via next(err) to the single global handler below. That's a clean,
+centralized design where all errors funnel to one place.
+
+I'd like to explore one real-world consideration with you. In your context,
+you pass stack: err.stack into the template, meaning the stack trace can be
+rendered on the error page.
+
+Given the security-consciousness you showed earlier with SQL injection and
+HTML escaping, what might be the downside of showing a full stack trace to
+the user on a live, public website—and how might you handle that
+differently in production versus development?
+
+------------------------------------------------------------------------
+STUDENT:
+The error stack contains important information what the error is about. And
+in case sombody tries to hack your page this message helps him to
+understand how to improve his attack next time.
+
+------------------------------------------------------------------------
+COACH:
+Exactly, Thomas Jörg—a stack trace is a gift to an attacker. It can reveal
+file paths, library versions, and the internal structure of your app, all
+of which help someone refine their next attempt. You've correctly
+identified the risk.
+
+So here's the second half of that thought—a genuine learning point rather
+than something you necessarily did wrong.
+
+How might you change the code so the stack trace is still visible to you
+while developing, but hidden from users on the live site—do you know of any
+mechanism Express or Node gives you to tell those two environments apart?
+
+------------------------------------------------------------------------
+STUDENT:
+You should check my code! In src/views/errors/500.ejs you might notice that
+the stack is shown only in case of NODE_ENV === 'development'.
+
+------------------------------------------------------------------------
+COACH:
+You were completely right, and I stand corrected—thank you for pointing me
+to src\views\errors\500.ejs. You've already implemented exactly the best
+practice I was fishing for:
+
+  <% if (NODE_ENV === 'development') { %>
+      <details open>
+          <summary>Error Details (Development Only)</summary>
+          <pre><%= error %></pre>
+          <pre><%= stack %></pre>
+      </details>
+  <% } %>
+
+This is textbook-correct: the diagnostic details are only rendered when
+NODE_ENV === 'development', so you get full visibility while working, and
+live users see only the friendly "Something Went Wrong" message. And I
+notice you even escape error and stack with <%= %>—consistent with the
+XSS-safe habit you showed earlier. That's genuinely well done, and you
+understood the concern before I even raised it.
+
+========================================================================
+SESSION SUMMARY — All four topics covered:
+
+- Models       : parameterized queries ($1 + params array) to prevent SQL
+                 injection; return shapes matched to caller expectations
+                 (array vs single object).
+- Views        : dynamic links via <%= project.project_id %>; correct use
+                 of <%= %> (escaped) vs <%- %> (raw) for XSS safety.
+- Controllers  : route parameters (:id -> req.params.id) with defensive
+                 parsing (parseInt(..., 10) || 0).
+- Error handling: centralized funnel — 404 catch-all forwarding to a single
+                 global error handler; environment-aware stack traces
+                 (dev only) in 500.ejs.
+
+There is no pass/fail. Completion is simply having had the conversation.
+Great work, Thomas Jörg!
+========================================================================
