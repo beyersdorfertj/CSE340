@@ -1,4 +1,4 @@
-import { getUpcomingProjects, getAllProjectsWithOrganizations, getProjectDetails, createProject } from '../models/projects.js';
+import { getUpcomingProjects, getAllProjectsWithOrganizations, getProjectDetails, createProject, updateProject } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
 import { body, validationResult } from 'express-validator';
 
@@ -71,4 +71,41 @@ const processNewProjectForm = async (req, res) => {
   }
 };
 
-export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, projectValidation };
+const showEditProjectForm = async (req, res) => {
+  const id = parseInt(req.params.id, 10) || 0;
+  const project = await getProjectDetails(id);
+  if (!project) {
+    req.flash('error', 'Project not found.');
+    return res.redirect('/projects');
+  }
+  const title = 'Edit Service Project';
+  const organizations = await getAllOrganizations();
+  res.render('projectEdit', { title, project, organizations });
+};
+
+const processEditProjectForm = async (req, res) => {
+  const id = parseInt(req.params.id, 10) || 0;
+  const { title, description, location, date, organizationId } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Loop through validation errors and flash them
+    errors.array().forEach((error) => {
+      req.flash('error', error.msg);
+    });
+
+    // Redirect back to the edit project form
+    return res.redirect(`/project/${id}/edit`);
+  }
+
+  try {
+    await updateProject(id, title, description, location, date, organizationId);
+    req.flash('success', 'Service project updated successfully!');
+    res.redirect(`/projects`);
+  } catch (error) {
+    console.error('Error updating project:', error);
+    req.flash('error', 'There was an error updating the service project.');
+    res.redirect(`/project/${id}/edit`);
+  }
+};
+
+export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm, projectValidation };
