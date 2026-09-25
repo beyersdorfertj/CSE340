@@ -39,7 +39,8 @@ body {
 
 nav,
 main,
-footer {
+footer,
+.alert {
     width: min(100% - 2rem, var(--content-width));
     margin-inline: auto;
 }
@@ -165,7 +166,8 @@ footer {
 @media (max-width: 700px) {
     nav,
     main,
-    footer {
+    footer,
+    .alert {
         width: min(100% - 1.1rem, var(--content-width));
     }
 
@@ -190,10 +192,11 @@ footer {
 
 /* Flash message styles */
 .alert {
+    margin-top: 1rem;
     padding: 15px;
-    margin-bottom: 20px;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 .alert.success {
     color: #155724;

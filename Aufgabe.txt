@@ -1,0 +1,50 @@
+Overview
+In this assignment, you will add the ability to insert and update categories, including the necessary model and controller functions, routes, and views.
+
+New Features
+For this assignment you will need to add the following features to your application:
+
+Page for inserting new categories
+Page for editing existing categories
+This will also require you to create the model and controller functions necessary to support these features.
+
+Instructions
+Follow these steps to complete the assignment:
+
+Implement the Create New Category page and functionality
+This page should be fairly simple, because it only needs to include the category name.
+Implement the Edit Category page and functionality.
+This page should be fairly simple, because it only needs to include the category name.
+Add client-side validation and server side validation for your create and edit category pages.
+For client-side validation ensure that the category name is present and has a max length of 100 characters.
+For server-side validation ensure that the category name is present and has a max length of 100 characters and also has a minimum length of 3 characters.
+(Do not add the minimum length validation to the client side so that you can test your server-side validation.)
+Requirements
+Your assignment must implement the following requirements:
+
+Learning and Team Activity Features: Organization and Project pages (including model and controller functions) are functional, as defined in the Learning Activities and the Team Activity. Specifically:
+Create New Organization page and functionality works correctly.
+Edit Organization page and functionality works correctly.
+Create New Service Project page and functionality works correctly.
+Edit Service Project page and functionality works correctly.
+Client-side and server-side validation for create and edit organization and service project pages is implemented and works correctly.
+Create Categories: The create category page (including model and controller functions) is functional, as defined in the Assignment instructions. Specifically:
+The create category view is rendered for the /new-category route.
+The create category form contains the necessary fields and client-side validation.
+The server correctly processes the create category form using a POST route to the /new-category route.
+The server contains the necessary server-side validation for the create category form.
+The controller and model functions are implemented correctly to handle the creation of categories.
+Edit Categories: The edit category page (including model and controller functions) is functional, as defined in the Assignment instructions. Specifically:
+The edit category view is rendered for the /edit-category/:id route.
+The edit category form is pre-populated with the existing category data and contains the necessary fields and client-side validation.
+The server correctly processes the edit category form using a POST route to the /edit-category/:id route.
+The server contains the necessary server-side validation for the edit category form.
+The controller and model functions are implemented correctly to handle the updating of categories.
+Code Organization and Adherence to Pattern: All Node.js functions follow the Model-View-Controller (MVC) pattern and are in the appropriate files.
+Model functions (database code) are in the appropriate model files.
+Controller functions contain no database code and focus on preparing data for the views.
+Routes are defined in the appropriate route file, not the server.js file. They use the controllers functions defined in the separate controller files.
+All files and functions follow the naming conventions demonstrated in the learning activities.
+Deployment and Professional style: The application is deployed and looks professional.
+The application is deployed and fully functional on the hosting server.
+The CSS used for the application provides a professional appearance that adheres to accessibility standards.
