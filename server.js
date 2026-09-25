@@ -10,6 +10,17 @@ const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
+// Fail fast with a clear message if required configuration is missing.
+// Without this, a missing SESSION_SECRET makes express-session throw on every
+// request, which surfaces only as a generic "Internal Server Error".
+const REQUIRED_ENV = ['SESSION_SECRET', 'DB_URL'];
+const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error(`FATAL: Missing required environment variable(s): ${missingEnv.join(', ')}`);
+  console.error('Set these in your hosting environment (e.g. Render > Environment) or in a local .env file.');
+  process.exit(1);
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -62,16 +73,29 @@ app.use((err, req, res, next) => {
   // Determine status and template
   const status = err.status || 500;
   const template = status === 404 ? '404' : '500';
-    
-  // Prepare data for the template
+
+  // Prepare data for the template. NODE_ENV is passed explicitly because the
+  // res.locals middleware may not have run if the error happened earlier in the
+  // middleware chain (e.g. a failing session middleware).
   const context = {
     title: status === 404 ? 'Page Not Found' : 'Server Error',
     error: err.message,
-    stack: err.stack
+    stack: err.stack,
+    NODE_ENV
   };
-    
-  // Render the appropriate error template
-  res.status(status).render(`errors/${template}`, context);
+
+  // Render the error template, but fall back to a plain-text response if the
+  // template itself cannot render (e.g. session/flash is unavailable). This
+  // guarantees a meaningful message instead of a bare "Internal Server Error".
+  res.status(status).render(`errors/${template}`, context, (renderErr, html) => {
+    if (renderErr) {
+      console.error('Failed to render error page:', renderErr.message);
+      const detail = NODE_ENV === 'development' ? `\n\n${err.stack}` : '';
+      res.type('text/plain').send(`${context.title} (${status})\n\n${err.message}${detail}`);
+      return;
+    }
+    res.send(html);
+  });
 });
 
 const startServer = () => {
