@@ -26,8 +26,10 @@
     <p><strong>Description:</strong> <%= project.organizationDescription %></p>
     <p><strong>Contact:</strong> <%= project.contactEmail %></p>
 
+    <% if (user?.roleName === 'admin') { %>
     <a href="/project/<%= project.projectId %>/assign-categories">Edit Categories</a>
     <a href="/project/<%= project.projectId %>/edit">Edit Project</a>
+    <% } %>
   <% } %>
 </main>
 <%- include('partials/footer') %>

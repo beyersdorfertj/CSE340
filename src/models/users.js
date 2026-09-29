@@ -7,7 +7,7 @@ const createUser = async (name, email, passwordHash) => {
   const query = `
     INSERT INTO users (name, email, password_hash, role_id) 
     VALUES ($1, $2, $3, (SELECT role_id FROM roles WHERE role_name = $4)) 
-    RETURNING user_id
+    RETURNING user_id AS "userId"
   `;
   const queryParams = [name, email, passwordHash, default_role];
     
@@ -18,17 +18,18 @@ const createUser = async (name, email, passwordHash) => {
   }
 
   if (process.env.ENABLE_SQL_LOGGING === 'true') {
-    console.log('Created new user with ID:', result.rows[0].user_id);
+    console.log('Created new user with ID:', result.rows[0].userId);
   }
 
-  return result.rows[0].user_id;
+  return result.rows[0].userId;
 };
 
 const findUserByEmail = async (email) => {
   const query = `
-    SELECT user_id, name, email, password_hash, role_id 
-    FROM users 
-    WHERE email = $1
+    SELECT u.user_id AS "userId", u.email, u.password_hash AS "passwordHash", r.role_name AS "roleName"
+    FROM users u
+    JOIN roles r ON u.role_id = r.role_id
+    WHERE u.email = $1
   `;
   const queryParams = [email];
     
@@ -48,8 +49,8 @@ const verifyPassword = async (password, passwordHash) => {
 const authenticateUser = async (email, password) => {
   const user = await findUserByEmail(email);
   if (!user) return null;
-  if (!await verifyPassword(password, user.password_hash)) return null;
-  delete user.password_hash;
+  if (!await verifyPassword(password, user.passwordHash)) return null;
+  delete user.passwordHash;
   return user;
 }
 

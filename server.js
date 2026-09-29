@@ -49,6 +49,8 @@ app.set('views', path.join(__dirname, 'src/views'));  // Tell Express where to f
 app.use((req, res, next) => {
   res.locals.isLoggedIn = !!req.session?.user;
 
+  res.locals.user = req.session.user || null;
+
   if (NODE_ENV === 'development') {
     console.log(`${req.method} ${req.url}`);
   }
