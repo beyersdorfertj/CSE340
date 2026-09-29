@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict Nc1Y3wuYbLWEewd7ZNpuHVHXEUerynf6weC0CLU3FTfq7UgIAtIPBZIHSBQfCHY
+\restrict ANRPZWmnaPKiHzfTOJeh7h1nBJFM9LEtRFpJSVuXGEBFdveyFt3yZZRgtos3vsd
 
 -- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-09-27 22:09:16
+-- Started on 2026-09-27 20:44:38
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,7 +22,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 5 (class 2615 OID 2200)
+-- TOC entry 5 (class 2615 OID 16619)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: tjb_cse340_db
 --
 
@@ -32,7 +32,7 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 3437 (class 0 OID 0)
+-- TOC entry 3414 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: tjb_cse340_db
 --
@@ -45,7 +45,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 219 (class 1259 OID 16406)
+-- TOC entry 219 (class 1259 OID 16620)
 -- Name: categories; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -58,7 +58,7 @@ CREATE TABLE public.categories (
 ALTER TABLE public.categories OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 220 (class 1259 OID 16411)
+-- TOC entry 220 (class 1259 OID 16625)
 -- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -73,7 +73,7 @@ ALTER TABLE public.categories ALTER COLUMN category_id ADD GENERATED ALWAYS AS I
 
 
 --
--- TOC entry 221 (class 1259 OID 16412)
+-- TOC entry 221 (class 1259 OID 16626)
 -- Name: organizations; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -89,7 +89,7 @@ CREATE TABLE public.organizations (
 ALTER TABLE public.organizations OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 222 (class 1259 OID 16422)
+-- TOC entry 222 (class 1259 OID 16636)
 -- Name: organization_organization_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -104,7 +104,7 @@ ALTER TABLE public.organizations ALTER COLUMN organization_id ADD GENERATED ALWA
 
 
 --
--- TOC entry 223 (class 1259 OID 16423)
+-- TOC entry 223 (class 1259 OID 16637)
 -- Name: project_categories; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -117,7 +117,7 @@ CREATE TABLE public.project_categories (
 ALTER TABLE public.project_categories OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 224 (class 1259 OID 16428)
+-- TOC entry 224 (class 1259 OID 16642)
 -- Name: projects; Type: TABLE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -134,7 +134,7 @@ CREATE TABLE public.projects (
 ALTER TABLE public.projects OWNER TO tjb_cse340_db;
 
 --
--- TOC entry 225 (class 1259 OID 16440)
+-- TOC entry 225 (class 1259 OID 16654)
 -- Name: projects_project_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -149,82 +149,21 @@ ALTER TABLE public.projects ALTER COLUMN project_id ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- TOC entry 227 (class 1259 OID 16465)
--- Name: roles; Type: TABLE; Schema: public; Owner: tjb_cse340_db
---
-
-CREATE TABLE public.roles (
-    role_id integer NOT NULL,
-    role_name character varying(50) NOT NULL,
-    role_description text
-);
-
-
-ALTER TABLE public.roles OWNER TO tjb_cse340_db;
-
---
--- TOC entry 226 (class 1259 OID 16464)
--- Name: roles_role_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE public.roles ALTER COLUMN role_id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.roles_role_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
--- TOC entry 229 (class 1259 OID 16477)
--- Name: users; Type: TABLE; Schema: public; Owner: tjb_cse340_db
---
-
-CREATE TABLE public.users (
-    user_id integer NOT NULL,
-    name character varying(100) NOT NULL,
-    email character varying(100) NOT NULL,
-    password_hash character varying(255) NOT NULL,
-    role_id integer,
-    created_at timestamp without time zone
-);
-
-
-ALTER TABLE public.users OWNER TO tjb_cse340_db;
-
---
--- TOC entry 228 (class 1259 OID 16476)
--- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE public.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.users_user_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
--- TOC entry 3421 (class 0 OID 16406)
+-- TOC entry 3402 (class 0 OID 16620)
 -- Dependencies: 219
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
 
 COPY public.categories (category_id, name) FROM stdin;
-2	Educational
 3	Community Service
 4	Health & Wellness
 1	Environmental
+2	Educational
 \.
 
 
 --
--- TOC entry 3423 (class 0 OID 16412)
+-- TOC entry 3404 (class 0 OID 16626)
 -- Dependencies: 221
 -- Data for Name: organizations; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
@@ -233,11 +172,20 @@ COPY public.organizations (organization_id, name, description, contact_email, lo
 1	BrightFuture Builders	A nonprofit focused on improving community infrastructure through sustainable construction projects.	info@brightfuturebuilders.org	brightfuture-logo.png
 2	GreenHarvest Growers	An urban farming collective promoting food sustainability and education in local neighborhoods.	contact@greenharvest.org	greenharvest-logo.png
 3	UnityServe Volunteers	A volunteer coordination group supporting local charities and service initiatives.	hello@unityserve.org	unityserve-logo.png
+5	TestOrg	nothing		placeholder-logo.png
+6	CurlTest	viacurl	a@b.c	placeholder-logo.png
+7	Test 3			placeholder-logo.png
+8				placeholder-logo.png
+9				placeholder-logo.png
+10	StyleTest	x	a@b.c	placeholder-logo.png
+11	StyleTest2	x	a@b.c	placeholder-logo.png
+12	CamelTest	RefactorCheck	camel@test.com	placeholder-logo.png
+4	EditCamel	Edited	edit@test.com	placeholder-logo.png
 \.
 
 
 --
--- TOC entry 3425 (class 0 OID 16423)
+-- TOC entry 3406 (class 0 OID 16637)
 -- Dependencies: 223
 -- Data for Name: project_categories; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
@@ -262,11 +210,12 @@ COPY public.project_categories (project_id, category_id) FROM stdin;
 24	2
 24	4
 25	4
+32	3
 \.
 
 
 --
--- TOC entry 3426 (class 0 OID 16428)
+-- TOC entry 3407 (class 0 OID 16642)
 -- Dependencies: 224
 -- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
 --
@@ -287,78 +236,40 @@ COPY public.projects (project_id, organization_id, title, description, location,
 28	3	Digital Case Management System	Digital case management system for social services	Madrid, Spain	2027-02-28
 29	3	Neighborhood Outreach Mobile App	Mobile app for neighborhood outreach programs	Stockholm, Sweden	2026-12-20
 30	3	Online Donation & Fundraising Portal	Online donation and fundraising portal development	Seoul, South Korea	2027-07-05
+31	2	Test Dropdown	Test Dropdown	Test Dropdown	2026-10-04
+32	1	Test Dropdown 2	Test Dropdown 2	v	2026-11-01
 \.
 
 
 --
--- TOC entry 3429 (class 0 OID 16465)
--- Dependencies: 227
--- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
---
-
-COPY public.roles (role_id, role_name, role_description) FROM stdin;
-1	user	Standard user with basic access
-2	admin	Administrator with full system access
-\.
-
-
---
--- TOC entry 3431 (class 0 OID 16477)
--- Dependencies: 229
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: tjb_cse340_db
---
-
-COPY public.users (user_id, name, email, password_hash, role_id, created_at) FROM stdin;
-\.
-
-
---
--- TOC entry 3439 (class 0 OID 0)
+-- TOC entry 3416 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
-SELECT pg_catalog.setval('public.categories_category_id_seq', 4, true);
+SELECT pg_catalog.setval('public.categories_category_id_seq', 5, true);
 
 
 --
--- TOC entry 3440 (class 0 OID 0)
+-- TOC entry 3417 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: organization_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
-SELECT pg_catalog.setval('public.organization_organization_id_seq', 3, true);
+SELECT pg_catalog.setval('public.organization_organization_id_seq', 12, true);
 
 
 --
--- TOC entry 3441 (class 0 OID 0)
+-- TOC entry 3418 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: projects_project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
 --
 
-SELECT pg_catalog.setval('public.projects_project_id_seq', 30, true);
+SELECT pg_catalog.setval('public.projects_project_id_seq', 32, true);
 
 
 --
--- TOC entry 3442 (class 0 OID 0)
--- Dependencies: 226
--- Name: roles_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
---
-
-SELECT pg_catalog.setval('public.roles_role_id_seq', 2, true);
-
-
---
--- TOC entry 3443 (class 0 OID 0)
--- Dependencies: 228
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tjb_cse340_db
---
-
-SELECT pg_catalog.setval('public.users_user_id_seq', 1, false);
-
-
---
--- TOC entry 3255 (class 2606 OID 16442)
+-- TOC entry 3245 (class 2606 OID 16656)
 -- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -367,7 +278,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- TOC entry 3257 (class 2606 OID 16444)
+-- TOC entry 3247 (class 2606 OID 16658)
 -- Name: organizations organization_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -376,7 +287,7 @@ ALTER TABLE ONLY public.organizations
 
 
 --
--- TOC entry 3259 (class 2606 OID 16446)
+-- TOC entry 3249 (class 2606 OID 16660)
 -- Name: project_categories pk_projekt_categories; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -385,7 +296,7 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3261 (class 2606 OID 16448)
+-- TOC entry 3251 (class 2606 OID 16662)
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -394,43 +305,7 @@ ALTER TABLE ONLY public.projects
 
 
 --
--- TOC entry 3263 (class 2606 OID 16471)
--- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE ONLY public.roles
-    ADD CONSTRAINT roles_pkey PRIMARY KEY (role_id);
-
-
---
--- TOC entry 3267 (class 2606 OID 16486)
--- Name: users uq_email; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT uq_email UNIQUE (email);
-
-
---
--- TOC entry 3265 (class 2606 OID 16473)
--- Name: roles uq_role_name; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE ONLY public.roles
-    ADD CONSTRAINT uq_role_name UNIQUE (role_name);
-
-
---
--- TOC entry 3269 (class 2606 OID 16482)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
-
-
---
--- TOC entry 3270 (class 2606 OID 16449)
+-- TOC entry 3252 (class 2606 OID 16663)
 -- Name: project_categories fk_category; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -439,7 +314,7 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3271 (class 2606 OID 16454)
+-- TOC entry 3253 (class 2606 OID 16668)
 -- Name: project_categories fk_project; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -448,7 +323,7 @@ ALTER TABLE ONLY public.project_categories
 
 
 --
--- TOC entry 3272 (class 2606 OID 16459)
+-- TOC entry 3254 (class 2606 OID 16673)
 -- Name: projects fk_projects_organization; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
 --
 
@@ -457,16 +332,7 @@ ALTER TABLE ONLY public.projects
 
 
 --
--- TOC entry 3273 (class 2606 OID 16488)
--- Name: users fk_role_user; Type: FK CONSTRAINT; Schema: public; Owner: tjb_cse340_db
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_role_user FOREIGN KEY (role_id) REFERENCES public.roles(role_id) NOT VALID;
-
-
---
--- TOC entry 3438 (class 0 OID 0)
+-- TOC entry 3415 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: tjb_cse340_db
 --
@@ -475,7 +341,7 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
 --
--- TOC entry 2077 (class 826 OID 16391)
+-- TOC entry 2067 (class 826 OID 16391)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -483,7 +349,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON SEQUENCES TO tjb_cse340_
 
 
 --
--- TOC entry 2079 (class 826 OID 16393)
+-- TOC entry 2069 (class 826 OID 16393)
 -- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -491,7 +357,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TYPES TO tjb_cse340_db;
 
 
 --
--- TOC entry 2078 (class 826 OID 16392)
+-- TOC entry 2068 (class 826 OID 16392)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
@@ -499,18 +365,18 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON FUNCTIONS TO tjb_cse340_
 
 
 --
--- TOC entry 2076 (class 826 OID 16390)
+-- TOC entry 2066 (class 826 OID 16390)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: -; Owner: postgres
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO tjb_cse340_db;
 
 
--- Completed on 2026-09-27 22:09:19
+-- Completed on 2026-09-27 20:44:43
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Nc1Y3wuYbLWEewd7ZNpuHVHXEUerynf6weC0CLU3FTfq7UgIAtIPBZIHSBQfCHY
+\unrestrict ANRPZWmnaPKiHzfTOJeh7h1nBJFM9LEtRFpJSVuXGEBFdveyFt3yZZRgtos3vsd
 

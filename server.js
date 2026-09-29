@@ -47,6 +47,8 @@ app.set('views', path.join(__dirname, 'src/views'));  // Tell Express where to f
 
 // Middleware to log all incoming requests and to make NODE_ENV available to all templates
 app.use((req, res, next) => {
+  res.locals.isLoggedIn = !!req.session?.user;
+
   if (NODE_ENV === 'development') {
     console.log(`${req.method} ${req.url}`);
   }
