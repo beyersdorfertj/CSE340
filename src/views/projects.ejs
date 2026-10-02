@@ -2,9 +2,9 @@
     <main>
         <h1><%= title %></h1>
         <% if (upcomingOnly) { %>
-            <p><a href="/projects">Show all projects</a></p>
+            <p><a class="btn btn-secondary" href="/projects">Show all projects</a></p>
         <% } else { %>
-            <p><a href="/projects?upcoming=true">Show only the next upcoming projects</a></p>
+            <p><a class="btn btn-secondary" href="/projects?upcoming=true">Show only the next upcoming projects</a></p>
         <% } %>
         <% if (projects.length === 0) { %>
             <p>No projects are available right now.</p>
@@ -27,7 +27,7 @@
             </ul>
         <% } %>
         <% if (user?.roleName === 'admin') { %>
-        <p><a href="/project/new">Add a New Service Project</a></p>
+        <p><a class="btn" href="/project/new">Add a New Service Project</a></p>
         <% } %>
     </main>
 <%- include('partials/footer') %>

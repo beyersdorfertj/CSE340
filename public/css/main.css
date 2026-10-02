@@ -190,6 +190,149 @@ footer {
     }
 }
 
+/* Forms */
+form {
+    margin-top: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    color: var(--text);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+textarea {
+    min-height: 7rem;
+    resize: vertical;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+    border-color: var(--primary);
+}
+
+/* Checkbox rows (e.g. the assign-categories form) */
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+}
+
+.form-group input[type="checkbox"] + label {
+    display: inline;
+    font-weight: 400;
+}
+
+/* Buttons */
+button {
+    display: inline-block;
+    padding: 0.65rem 1.4rem;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--primary);
+    border: 1px solid var(--primary-strong);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--primary-strong);
+}
+
+button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* Action links styled as buttons (e.g. "Add a new project", "Edit") */
+.btn {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    margin: 0.25rem 0.4rem 0.25rem 0;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--primary);
+    border: 1px solid var(--primary-strong);
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: var(--primary-strong);
+    color: #fff;
+}
+
+.btn:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.btn-secondary {
+    color: var(--primary);
+    background-color: var(--surface);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover {
+    background-color: #e5effa;
+    color: var(--primary-strong);
+}
+
+/* Tables (e.g. the admin users list) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+thead th {
+    background-color: var(--surface-muted);
+    color: var(--text);
+    font-weight: 600;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background-color: #f1f6fc;
+}
+
 /* Flash message styles */
 .alert {
     margin-top: 1rem;

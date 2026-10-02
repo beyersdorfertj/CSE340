@@ -8,7 +8,7 @@
     <% } else { %>
       <h2>Name: <%= category.name %></h2>
       <% if (user?.roleName === 'admin') { %>
-      <p><a href="/category/<%= category.categoryId %>/edit">Edit Category</a></p>
+      <p><a class="btn" href="/category/<%= category.categoryId %>/edit">Edit Category</a></p>
       <% } %>
 
       <% if (projects.length === 0) { %>

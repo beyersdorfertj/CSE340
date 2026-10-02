@@ -84,7 +84,7 @@ const requireRole = (role) => {
     // Check if user's role matches the required role
     if (req.session.user.roleName !== role) {
       req.flash('error', 'You do not have permission to access this page.');
-      return res.redirect('/');
+      return res.redirect('/dashboard');
     }
 
     // User has required role, continue
