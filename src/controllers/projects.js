@@ -1,5 +1,6 @@
 import { getUpcomingProjects, getAllProjectsWithOrganizations, getProjectDetails, createProject, updateProject } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
+import { isUserVolunteering } from '../models/volunteers.js';
 import { body, validationResult } from 'express-validator';
 
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
@@ -38,7 +39,13 @@ const showProjectDetailsPage = async (req, res) => {
   const id = parseInt(req.params.id, 10) || 0;
   const project = await getProjectDetails(id);
   const title = project ? project.title : 'Project Not Found';
-  res.render('project', { title, project });
+
+  // Only check volunteer status for logged-in users; guests see no volunteer UI.
+  const isVolunteering = req.session.user
+    ? await isUserVolunteering(req.session.user.userId, id)
+    : false;
+
+  res.render('project', { title, project, isVolunteering });
 };
 
 const showNewProjectForm = async (req, res) => {

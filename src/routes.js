@@ -26,6 +26,9 @@ import {
   showDashboard, showUsersPage, requireLogin, requireRole,
   showLoginForm, processLoginForm, processLogout
 } from './controllers/users.js';
+import {
+  addVolunteerSignup, removeVolunteerSignup
+} from './controllers/volunteers.js';
 
 const router = express.Router();
 
@@ -50,6 +53,10 @@ router.get('/project/:id/assign-categories', requireRole('admin'), showAssignCat
 router.post('/project/:id/assign-categories', requireRole('admin'), processAssignCategoriesForm);
 router.get('/project/:id/edit', requireRole('admin'), showEditProjectForm);
 router.post('/project/:id/edit', requireRole('admin'), projectValidation, processEditProjectForm);
+
+// volunteer signup routes (logged-in users only)
+router.post('/project/:id/volunteer', requireLogin, addVolunteerSignup);
+router.post('/project/:id/volunteer/remove', requireLogin, removeVolunteerSignup);
 
 // category routes
 router.get('/categories', showCategoriesPage);

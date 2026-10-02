@@ -7,6 +7,32 @@
   <p>Name: <%= name %></p>
   <p>Username: <%= email %></p>
 
+  <h2>My Volunteer Projects</h2>
+  <% if (volunteeredProjects.length === 0) { %>
+    <p>You have not signed up to volunteer for any projects yet.</p>
+  <% } else { %>
+    <ul>
+      <% volunteeredProjects.forEach(project => { %>
+        <%
+          const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        %>
+        <li>
+          <%= formattedDate %>:
+          <strong><a href="/project/<%= project.projectId %>"><%= project.title %></a></strong>
+          (<a href="/organization/<%= project.organizationId %>"><%= project.organizationName %></a>)
+          <form action="/project/<%= project.projectId %>/volunteer/remove" method="POST">
+            <input type="hidden" name="redirectTo" value="/dashboard">
+            <button type="submit" class="btn btn-secondary">Remove</button>
+          </form>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+
   <% if (user?.roleName === 'admin') { %>
     <p><a class="btn" href="/users">Manage users</a></p>
   <% } %>
