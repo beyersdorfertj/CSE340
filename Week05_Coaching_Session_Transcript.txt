@@ -1,0 +1,346 @@
+===============================================================
+Week 05 Coaching Session Transcript
+Participant: Thomas Jörg
+Role of AI: Learning Coach and Software Mentor
+Date: 2026-10-01
+===============================================================
+
+---------------------------------------------------------------
+COACH:
+Welcome! Just to be clear from the start, this is a coaching
+session, not a test. It is perfectly okay—and even encouraged—to
+say "I don't know" or "I made a mistake." That's the fastest way
+we'll learn today.
+
+I'm your Learning Coach and Software Mentor for this Week 05
+session. Think of this as an open, relaxed conversation about
+your assignment — you lead with your curiosity, and I'll make
+sure we touch on a few key areas along the way. Since we're
+working inside your code editor, I can look at your files
+directly and cite them by file and line, so you won't need to
+paste much unless you'd like to.
+
+Before we dive in: what name would you like me to call you
+during our session today?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+Thomas Jörg
+
+---------------------------------------------------------------
+COACH:
+Great to meet you, Thomas Jörg! I'm glad you're here, and I want
+you to feel completely at ease — there are no wrong answers
+today, just conversation and learning.
+
+We have four areas I'd like us to explore together: user
+registration and password hashing, login and sessions,
+route-protection middleware, and role-based navigation in your
+UI. You're welcome to steer us wherever your own questions take
+you, and I'll gently make sure we cover all four.
+
+Let's start with the first one. In your own words, can you walk
+me through what happens in your application when a brand-new user
+registers for an account?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+There is no kind of restriction. Each user will be accepted
+immediately as long as he has a unique email address. After this
+this information will be stored in the database. After this the
+user is not authorized but forwarded to login page.
+
+---------------------------------------------------------------
+COACH:
+That's a clear summary, Thomas Jörg — and you hit an important
+point: the user is created but *not* automatically logged in,
+which is a sensible choice.
+
+You mentioned the information gets "stored in the database."
+Let's zoom in on one especially important piece of that. When
+you save the user's password, what happens to it between the
+moment they type it in the form and the moment it lands in the
+database — and could you point me to (or paste) the few lines of
+code where that happens?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+In users.js processUserRegistration() the function createUser()
+gets called to store the data into DB. But what you mean is the
+fact, that this function doesn't use the password but a hash of
+it.
+
+const processUserRegistrationForm = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Hash the password before storing it
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // Create the user in the database
+    const userId = await createUser(name, email, passwordHash);
+
+---------------------------------------------------------------
+COACH:
+Exactly right — that's the key insight. You never store the raw
+password; you store a bcrypt hash of it. Nice work spotting that.
+
+Let's dig into that one line a little:
+`const salt = await bcrypt.genSalt(10)`. Can you explain what
+that "salt" is doing, and what the `10` represents — and why
+those details matter for security?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+salt adds randomness so equal passwords differ and it's stored
+with the hash in the database; 10 is the cost factor, it can be
+understood as how many rounds the encryption process takes
+
+---------------------------------------------------------------
+COACH:
+Spot on, Thomas Jörg. Just to add a tiny bit of nuance to
+reinforce what you said: the cost factor is exponential — `10`
+means 2^10 (1,024) rounds of work. Each time you increase it by
+one, you *double* the effort, which is what keeps bcrypt
+resistant to brute-force attacks as hardware gets faster. And
+you're right that the salt gets embedded in the resulting hash
+string, so bcrypt knows how to verify it later. You clearly
+understand this well.
+
+Let's move to our second topic: login and sessions. Once a
+registered user comes back and logs in successfully, how does
+your application "remember" that they're logged in as they click
+around to different pages?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+In server.js line 52: res.locals.user = req.session.user || null;
+so you can use this, whereas req.session.user is set in
+processLoginForm() of user.js to become available for future
+requests.
+
+---------------------------------------------------------------
+COACH:
+Good — you've connected two important pieces there:
+`req.session.user` holds the logged-in user, and
+`res.locals.user` exposes it to your views on every request.
+That middleware line is a neat way to avoid repeating yourself in
+every route.
+
+Let's look at where the session actually gets established. Could
+you show me the part of `processLoginForm()` where you verify the
+user's credentials and then set `req.session.user`, and walk me
+through what those lines are doing?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+processLoginForm() calls authenticateUser() in users.js, which
+returns a user object only, if the stored password hash fits to
+the password as checked in line 52 of users.js.
+
+const authenticateUser = async (email, password) => {
+  const user = await findUserByEmail(email);
+  if (!user) return null;
+  if (!await verifyPassword(password, user.passwordHash)) return null;
+  delete user.passwordHash;
+  return user;
+}
+
+---------------------------------------------------------------
+COACH:
+That's a well-structured function, Thomas Jörg. I especially like
+the line `delete user.passwordHash;` — that's a thoughtful touch.
+
+Can you tell me why you chose to delete the `passwordHash` from
+the user object before returning it, given that this object then
+ends up in `req.session.user`?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+so it won't be stored in the session and it can't be misused in
+this way.
+
+---------------------------------------------------------------
+COACH:
+Precisely — you're keeping sensitive data out of the session
+entirely, and since `res.locals.user` later exposes that object
+to your templates, this also prevents the hash from accidentally
+leaking into a rendered page. Good defensive thinking.
+
+Let me ask about the session plumbing itself for a moment.
+Somewhere you had to configure the session middleware (the
+`express-session` setup). Can you describe what that
+configuration looks like and what role the session "secret"
+plays in it?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+}));
+
+This happens in server.js. The session middleware is configured
+with express-session using app.use(). The configuration
+typically includes options such as secret, resave,
+saveUninitialized, and cookie settings. The secret is used to
+sign the session ID cookie. This helps prevent attackers from
+tampering with the cookie because Express can verify that it was
+created by the server and has not been modified. The secret
+should be long, random, and is stored securely in an environment
+variable.
+
+---------------------------------------------------------------
+COACH:
+That's a thorough and accurate explanation, Thomas Jörg — and I
+love that you're storing the secret in an environment variable
+rather than hard-coding it. That's exactly the right instinct,
+since anyone who knows the secret could forge valid session
+cookies.
+
+Now to our third topic: protecting routes with middleware. You
+have certain pages that shouldn't be reachable by just anyone.
+How does your application stop a user from accessing a protected
+route — and can you show me the middleware that handles this?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+router.get('/organization/new', requireRole('admin'),
+showNewOrganizationForm); it requires a role assigned to a user,
+so you have to be logged in and need to have the required role.
+
+---------------------------------------------------------------
+COACH:
+Good — that shows the middleware *in use*, guarding the route
+before `showNewOrganizationForm` ever runs. You've also made a
+nice observation that `requireRole('admin')` implies being logged
+in *and* having the right role.
+
+Let's look under the hood. Can you show me the actual
+implementation of `requireRole` (and `requireLogin` if it's
+separate), and walk me through how it decides whether to let the
+request through or block it?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+const requireRole = (role) => {
+  return (req, res, next) => {
+    // Check if user is logged in first
+    if (!req.session?.user) {
+      req.flash('error', 'You must be logged in to access this page.');
+      return res.redirect('/login');
+    }
+
+    // Check if user's role matches the required role
+    if (req.session.user.roleName !== role) {
+      req.flash('error', 'You do not have permission to access this page.');
+      return res.redirect('/');
+    }
+
+    // User has required role, continue
+    next();
+  };
+};
+
+I'm not sure what to say as for me it's self-explaining. You just
+see the sequence: 1. is the user logged in? 2. does he have the
+role? 3. Continue.
+
+---------------------------------------------------------------
+COACH:
+You read it perfectly — the sequence is exactly that: logged in?
+right role? proceed. And honestly, code that reads
+self-explanatory is a *good* sign.
+
+There's one design detail I'd love your thoughts on, though.
+Notice that `requireRole` isn't itself the middleware — it's a
+function that *returns* a middleware function, which lets you
+write `requireRole('admin')`. Why do you think it was written
+that way, as a function returning a function, rather than just a
+plain middleware like `requireLogin`?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+so you can pass different roles and reuse the same middleware.
+Otherwise you could save the factory but need to write a function
+for each role in question.
+
+---------------------------------------------------------------
+COACH:
+Exactly — it's a middleware *factory*, and the closure "remembers"
+which role you passed in. That's a clean, DRY approach: one
+factory, infinite roles, no copy-pasting a near-identical
+function for `admin`, `employee`, and so on. Really nicely
+reasoned.
+
+Now to our fourth and final topic: role-based navigation in the
+UI. The middleware blocks the route on the server, but there's
+also the question of what links a user even *sees*. How does your
+application decide which navigation links or buttons to show or
+hide based on who's logged in — and can you show me an EJS
+snippet where you do that?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+<%- include('partials/header') %>
+    <main>
+        <h1><%= title %></h1>
+        <ul>
+            <% categories.forEach(category => { %>
+                <li><a href="/category/<%= category.categoryId %>"><%= category.name %></a></li>
+            <% }); %>
+        </ul>
+        <% if (user?.roleName === 'admin') { %>
+        <p><a href="/category/new">Add a new category</a></p>
+        <% } %>
+    </main>
+<%- include('partials/footer') %>
+
+The decision is done in line 9.
+
+---------------------------------------------------------------
+COACH:
+That's a clear example, Thomas Jörg — line 9 hides the "Add a new
+category" link unless `user?.roleName === 'admin'`, using that
+same `user` object you exposed through `res.locals` earlier.
+Everything ties together nicely.
+
+Here's the one concept I really want to make sure is solid, and
+it connects back to our middleware discussion. You now have *two*
+layers: this EJS check hides the link, and `requireRole('admin')`
+guards the route. If the EJS already hides the link from
+non-admins, why do you still need the server-side middleware
+check too — or is that redundant?
+
+---------------------------------------------------------------
+THOMAS JÖRG:
+user friendly coding hides the link but security protects the
+route.
+
+---------------------------------------------------------------
+COACH:
+That's the perfect way to put it, Thomas Jörg: the hidden link is
+a convenience, the middleware is the security. A user could
+always type the URL directly or forge a request, so the
+client-side UI can never be trusted as a protection — the server
+must always enforce it. You nailed the single most important idea
+in this whole topic.
+
+That brings us through all four areas — registration and password
+hashing, login and sessions, protected-access middleware, and
+role-based navigation. You demonstrated solid, well-reasoned
+understanding throughout, and you consistently explained not just
+*what* your code does but *why* you made those choices. That's
+exactly the kind of thinking that matters.
+
+===============================================================
+END OF SESSION
+Topics covered:
+  1. Registration and Password Hashing  ✓
+  2. Login and Sessions                 ✓
+  3. Protected Access Middleware        ✓
+  4. Protected Access Links / Navigation ✓
+===============================================================

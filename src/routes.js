@@ -22,8 +22,8 @@ import {
   projectValidation
 } from './controllers/projects.js';
 import {
-  showUserRegistrationForm, processUserRegistrationForm, 
-  showDashboard, requireLogin, requireRole, 
+  showUserRegistrationForm, processUserRegistrationForm,
+  showDashboard, showUsersPage, requireLogin, requireRole,
   showLoginForm, processLoginForm, processLogout
 } from './controllers/users.js';
 
@@ -58,6 +58,9 @@ router.post('/category/new', requireRole('admin'), categoryValidation, processNe
 router.get('/category/:id', showCategoryDetailsPage);
 router.get('/category/:id/edit', requireRole('admin'), showEditCategoryForm);
 router.post('/category/:id/edit', requireRole('admin'), categoryValidation, processEditCategoryForm);
+
+// user routes
+router.get('/users', requireRole('admin'), showUsersPage);
 
 router.get('/register', showUserRegistrationForm);
 router.post('/register', processUserRegistrationForm);
